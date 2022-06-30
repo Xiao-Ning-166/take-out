@@ -105,9 +105,8 @@
     <!-- 引入axios -->
     <script src="plugins/axios/axios.min.js"></script>
     <script src="js/request.js"></script>
-    <script src="./api/login.js"></script>
+    <script src="./api/api.js"></script>
     <script>
-
       new Vue({
         el: '#app',
         data() {
@@ -157,12 +156,15 @@
             headTitle: '员工管理',
             goBackFlag: false,
             loading: true,
-            timer: null
+            timer: null,
+            url: {
+              logout: '/employee/logout',
+            }
           }
         },
         computed: {},
         created() {
-          const userInfo = window.localStorage.getItem('userInfo')
+          const userInfo = localStorage.getItem('userInfo')
           if (userInfo) {
             this.userInfo = JSON.parse(userInfo)
           }
@@ -176,12 +178,21 @@
           window.menuHandle = this.menuHandle
         },
         methods: {
+          // 退出登录
           logout() {
-            logoutApi().then((res)=>{
-              if(res.code === 1){
-                localStorage.removeItem('userInfo')
-                window.location.href = '/backend/page/login/login.html'
-              }
+            this.$confirm('确定退出登录吗?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              postApi(this.url.logout).then((res)=>{
+                if(res.code === 200){
+                  // 清除用户信息
+                  localStorage.removeItem('userInfo')
+                  // 跳转登录页面
+                  window.location.href = '/backend/page/login/login.html'
+                }
+              })
             })
           },
           goBack() {

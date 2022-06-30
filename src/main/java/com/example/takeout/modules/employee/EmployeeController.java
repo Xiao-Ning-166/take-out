@@ -58,8 +58,21 @@ public class EmployeeController {
             return Result.error("账号已被禁用，请联系管理员!");
         }
         // 5、将用户信息存储到session中
-        request.getSession().setAttribute("empInfo", empInfo);
+        request.getSession().setAttribute("empId", empInfo.getId());
         return Result.OK(empInfo).success("登录成功，正在跳转!");
     }
 
+
+    /**
+     * 员工退出登录
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public Result<?> logout(HttpServletRequest request) {
+        // 1、清楚session中当前登录员工id
+        request.getSession().removeAttribute("empId");
+        // 2、返回结果
+        return Result.OK().success("退出成功!");
+    }
 }
