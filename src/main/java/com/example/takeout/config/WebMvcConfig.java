@@ -21,7 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         log.info("正在映射静态资源......");
-        registry.addResourceHandler("/backend/**").addResourceLocations("/backend/");
-        registry.addResourceHandler("/front/**").addResourceLocations("/front/");
+        registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
+        registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
     }
 }

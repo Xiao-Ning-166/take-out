@@ -4,7 +4,7 @@
   const service = axios.create({
     // axios中请求配置有baseURL选项，表示请求URL公共部分
     baseURL: '/',
-    // 超时
+    // 请求超时时间
     timeout: 10000
   })
   // request拦截器
@@ -39,12 +39,12 @@
     return config
   }, error => {
       console.log(error)
-      Promise.reject(error)
+      return Promise.reject(error)
   })
 
   // 响应拦截器
   service.interceptors.response.use(res => {
-      if (res.data.code === 0 && res.data.msg === 'NOTLOGIN') {// 返回登录页面
+      if (res.data.code === 200 && res.data.message === 'NOTLOGIN') {// 返回登录页面
         console.log('---/backend/page/login/login.html---')
         localStorage.removeItem('userInfo')
         window.top.location.href = '/backend/page/login/login.html'
