@@ -32,7 +32,8 @@
         <div class="sidebar-container">
           <div class="logo">
             <!-- <img src="images/logo.png" width="122.5" alt="" /> -->
-            <img src="images/login/login-logo.png" alt="" style="width: 117px; height: 32px" />
+            <!--<img src="images/login/login-logo.png" alt="" style="width: 117px; height: 32px" />-->
+            <span style="font-size: 25px; color: white">菊下楼</span>
           </div>
 
           <el-scrollbar wrap-class="scrollbar-wrapper">
@@ -202,6 +203,7 @@
             // this.headTitle = menu.name
             this.menuHandle(menu,false)
           },
+          // 菜单切换
           menuHandle(item, goBackFlag) {
             this.loading = true
             this.menuActived = item.id
