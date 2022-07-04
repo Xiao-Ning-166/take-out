@@ -44,8 +44,9 @@
 
   // 响应拦截器
   service.interceptors.response.use(res => {
+      console.log('---响应拦截器---', res)
       if (res.data.code === 200 && res.data.message === 'NOTLOGIN') {// 返回登录页面
-        console.log('---/backend/page/login/login.html---')
+        console.log('---用户未登录!---')
         localStorage.removeItem('userInfo')
         window.top.location.href = '/backend/page/login/login.html'
       } else {
