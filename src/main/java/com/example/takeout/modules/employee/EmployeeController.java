@@ -1,7 +1,10 @@
 package com.example.takeout.modules.employee;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.takeout.constant.CommonConstant;
 import com.example.takeout.modules.employee.entity.Employee;
 import com.example.takeout.modules.employee.service.IEmployeeService;
@@ -9,13 +12,16 @@ import com.example.takeout.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sun.security.provider.MD5;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @author xiaoning
@@ -74,5 +80,15 @@ public class EmployeeController {
         request.getSession().removeAttribute("empId");
         // 2、返回结果
         return Result.OK().success("退出成功!");
+    }
+    
+
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody Employee employee, HttpServletRequest request) {
+
+        Long empId = (Long) request.getSession().getAttribute("empId");
+        employeeService.add(employee, empId);
+
+        return Result.OK().success("员工添加成功!");
     }
 }

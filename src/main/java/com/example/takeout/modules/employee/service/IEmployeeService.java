@@ -8,4 +8,12 @@ import com.example.takeout.modules.employee.entity.Employee;
  * @date 2022/06/29
  */
 public interface IEmployeeService extends IService<Employee> {
+
+    /**
+     * 添加员工
+     * @param employee 新员工信息
+     * @param empId 添加人主键
+     */
+    void add(Employee employee, Long empId);
+
 }
