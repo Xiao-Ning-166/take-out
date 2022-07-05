@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.takeout.modules.employee.mapper.EmployeeMapper">
+
+    <!-- 分页查询员工信息 -->
+    <select id="queryList" resultType="com.example.takeout.modules.employee.entity.Employee">
+        SELECT
+            id,
+            name,
+            username,
+            password,
+            phone,
+            sex,
+            id_card,
+            status,
+            create_time
+        FROM
+            employee
+        <where>
+            <if test="employee.name != null and employee.name != null">
+                name LIKE CONCAT('%', #{employee.name}, '%')
+            </if>
+        </where>
+        ORDER BY
+            update_time DESC
+    </select>
+
+
+</mapper>

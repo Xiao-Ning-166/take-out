@@ -1,6 +1,7 @@
 package com.example.takeout.modules.employee.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.takeout.exception.TakeOutException;
@@ -24,6 +25,18 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    /**
+     * 分页查询员工信息
+     *
+     * @param employee
+     * @param page
+     * @return
+     */
+    @Override
+    public IPage<Employee> queryList(Employee employee, IPage<Employee> page) {
+        return employeeMapper.queryList(employee, page);
+    }
 
     /**
      * 添加员工

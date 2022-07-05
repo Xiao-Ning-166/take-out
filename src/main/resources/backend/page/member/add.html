@@ -40,7 +40,7 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="身份证号:" prop="idNumber">
+        <el-form-item label="身份证号:" prop="idCard">
           <el-input v-model="ruleForm.idCard" placeholder="请输入身份证号" maxlength="20"/>
         </el-form-item>
 
@@ -100,9 +100,9 @@
                 }
               ],
               //姓名
-              name: [{ required: true, 'validator': checkName, 'trigger': 'blur' }],
-              'phone': [{ 'required': true, 'validator': checkPhone, 'trigger': 'blur' }],
-              'idNumber': [{ 'required': true, 'validator': validID, 'trigger': 'blur' }]
+              name: [{ required: true, validator: checkName, trigger: 'blur' }],
+              phone: [{ required: true, validator: checkPhone, trigger: 'blur' }],
+              idCard: [{ required: false, validator: validID, trigger: 'blur' }]
             }
           }
         },
@@ -110,7 +110,7 @@
           this.id = requestUrlParam('id')
           this.actionType = this.id ? 'edit' : 'add'
           if (this.id) {
-            this.init()
+            this.loadData()
           }
         },
         mounted() {

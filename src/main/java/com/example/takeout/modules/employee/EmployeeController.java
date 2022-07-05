@@ -81,7 +81,22 @@ public class EmployeeController {
         // 2、返回结果
         return Result.OK().success("退出成功!");
     }
-    
+
+    /**
+     * 分页查询员工信息
+     * @param employee
+     * @param current 当前页码
+     * @param size 每页大小
+     * @return
+     */
+    @GetMapping("/list")
+    public Result<?> list(Employee employee,
+                          @RequestParam(name="current", defaultValue="1") Integer current,
+                          @RequestParam(name="size", defaultValue="10") Integer size) {
+        IPage<Employee> employeePage = new Page<>(current, size);
+        IPage<Employee> employeeList = employeeService.queryList(employee, employeePage);
+        return Result.OK(employeeList);
+    }
 
     @PostMapping("/add")
     public Result<?> add(@RequestBody Employee employee, HttpServletRequest request) {

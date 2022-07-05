@@ -14,11 +14,12 @@
     // if (getToken() && !isToken) {
     //   config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     // }
+    console.log('---请求拦截器---', config)
     // get请求映射params参数
-    if (config.method === 'get' && config.params) {
+    if (config.method === 'get' && config.data) {
       let url = config.url + '?';
-      for (const propName of Object.keys(config.params)) {
-        const value = config.params[propName];
+      for (const propName of Object.keys(config.data)) {
+        const value = config.data[propName];
         var part = encodeURIComponent(propName) + "=";
         if (value !== null && typeof(value) !== "undefined") {
           if (typeof value === 'object') {
@@ -33,7 +34,7 @@
         }
       }
       url = url.slice(0, -1);
-      config.params = {};
+      config.data = {};
       config.url = url;
     }
     return config
