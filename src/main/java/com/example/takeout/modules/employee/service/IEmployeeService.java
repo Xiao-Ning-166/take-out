@@ -27,4 +27,11 @@ public interface IEmployeeService extends IService<Employee> {
      */
     void add(Employee employee, Long empId);
 
+    /**
+     * 修改员工信息
+     *
+     * @param employee
+     * @param empId
+     */
+    void edit(Employee employee, Long empId);
 }

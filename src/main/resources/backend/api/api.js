@@ -16,3 +16,12 @@ function postApi(url, params) {
         data: params
     })
 }
+
+// put 请求
+function putApi(url, params) {
+    return $axios({
+        url: url,
+        method: 'put',
+        data: params
+    })
+}

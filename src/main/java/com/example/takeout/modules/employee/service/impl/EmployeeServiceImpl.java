@@ -64,4 +64,20 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         // 保存员工信息
         employeeMapper.insert(employee);
     }
+
+    /**
+     * 修改员工信息
+     *
+     * @param employee
+     * @param empId
+     */
+    @Override
+    public void edit(Employee employee, Long empId) {
+        // 设置更新时间
+        employee.setUpdateTime(new Date());
+        // 设置更新人
+        employee.setUpdateUser(empId);
+        // 更新员工信息
+        employeeMapper.updateById(employee);
+    }
 }

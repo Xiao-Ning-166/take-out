@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,7 @@ public class EmployeeController {
 
     /**
      * 后台登录接口
+     *
      * @return
      */
     @PostMapping("/login")
@@ -71,6 +73,7 @@ public class EmployeeController {
 
     /**
      * 员工退出登录
+     *
      * @param request
      * @return
      */
@@ -84,20 +87,28 @@ public class EmployeeController {
 
     /**
      * 分页查询员工信息
+     *
      * @param employee
-     * @param current 当前页码
-     * @param size 每页大小
+     * @param current  当前页码
+     * @param size     每页大小
      * @return
      */
     @GetMapping("/list")
     public Result<?> list(Employee employee,
-                          @RequestParam(name="current", defaultValue="1") Integer current,
-                          @RequestParam(name="size", defaultValue="10") Integer size) {
+                          @RequestParam(name = "current", defaultValue = "1") Integer current,
+                          @RequestParam(name = "size", defaultValue = "10") Integer size) {
         IPage<Employee> employeePage = new Page<>(current, size);
         IPage<Employee> employeeList = employeeService.queryList(employee, employeePage);
         return Result.OK(employeeList);
     }
 
+    /**
+     * 添加用户信息
+     *
+     * @param employee
+     * @param request
+     * @return
+     */
     @PostMapping("/add")
     public Result<?> add(@RequestBody Employee employee, HttpServletRequest request) {
 
@@ -105,5 +116,20 @@ public class EmployeeController {
         employeeService.add(employee, empId);
 
         return Result.OK().success("员工添加成功!");
+    }
+
+    /**
+     * 修改用户信息
+     *
+     * @param employee
+     * @param request
+     * @return
+     */
+    @PutMapping("/edit")
+    public Result<?> edit(@RequestBody Employee employee, HttpServletRequest request) {
+        Long empId = (Long) request.getSession().getAttribute("empId");
+        employeeService.edit(employee, empId);
+
+        return Result.OK().success("员工信息更新成功!");
     }
 }
