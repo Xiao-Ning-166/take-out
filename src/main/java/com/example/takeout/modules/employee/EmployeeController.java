@@ -132,4 +132,16 @@ public class EmployeeController {
 
         return Result.OK().success("员工信息更新成功!");
     }
+
+    /**
+     * 通过id获取员工信息
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/getById")
+    public Result<?> getById(String id) {
+        Employee employee = employeeService.getById(id);
+        return Result.OK(employee);
+    }
 }

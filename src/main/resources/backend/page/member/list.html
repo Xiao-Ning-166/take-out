@@ -40,7 +40,7 @@
         <el-table-column label="操作" width="160" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="small" class="blueBug"
-                       @click="addMemberHandle(scope.row.id)" :class="{notAdmin:user !== 'admin'}">
+                       @click="addMemberHandle(scope.row)" :class="{notAdmin:user !== 'admin'}">
               编辑
             </el-button>
             <el-button type="text" size="small" class="delBut non"
@@ -52,7 +52,7 @@
       </el-table>
 
       <el-pagination class="pageList" :page-sizes="ipagination.pageSizeOptions" :page-size="ipagination.pageSize"
-                     layout="total, sizes, prev, pager, next, jumper" :total="ipagination.total"
+                     layout="total, sizes, prev, pager, next, jumper" :total="parseInt(ipagination.total)"
                      :current-page.sync="ipagination.page" @size-change="handleSizeChange" @current-change="handleCurrentChange">
       </el-pagination>
     </div>
@@ -64,7 +64,6 @@
     <!-- 引入axios -->
     <script src="../../plugins/axios/axios.min.js"></script>
     <script src="../../js/request.js"></script>
-    <script src="../../api/member.js"></script>
     <script src="../../api/api.js"></script>
   <script>
     new Vue({
@@ -118,17 +117,17 @@
           this.loadData(1);
         },
         // 添加
-        addMemberHandle (st) {
-          if (st === 'add'){
+        addMemberHandle (record) {
+          if (record === 'add'){
             window.parent.menuHandle({
               id: '2',
-              url: '/backend/page/member/add.html',
+              url: '/backend/page/member/form.html',
               name: '添加员工'
             },true)
           } else {
             window.parent.menuHandle({
               id: '2',
-              url: '/backend/page/member/add.html?id='+st,
+              url: '/backend/page/member/form.html?id='+record.id,
               name: '修改员工'
             },true)
           }
