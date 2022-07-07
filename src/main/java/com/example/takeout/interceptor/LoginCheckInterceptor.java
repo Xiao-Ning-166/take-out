@@ -2,6 +2,7 @@ package com.example.takeout.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import com.example.takeout.utils.BaseContext;
 import com.example.takeout.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             response.getWriter().write(JSON.toJSONString(Result.OK().success("NOTLOGIN")));
             return false;
         }
+        // 2、说明用户已登录
+        // 设置登录用户id到ThreadLocal中
+        BaseContext.setLoginUserId(empId);
         return true;
     }
 }

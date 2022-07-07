@@ -55,12 +55,6 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         }
         // 设置默认密码
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-        // 设置时间
-        employee.setCreateTime(new Date());
-        employee.setUpdateTime(new Date());
-        // 设置创建人
-        employee.setCreateUser(empId);
-        employee.setUpdateUser(empId);
         // 保存员工信息
         employeeMapper.insert(employee);
     }
@@ -73,10 +67,6 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
      */
     @Override
     public void edit(Employee employee, Long empId) {
-        // 设置更新时间
-        employee.setUpdateTime(new Date());
-        // 设置更新人
-        employee.setUpdateUser(empId);
         // 更新员工信息
         employeeMapper.updateById(employee);
     }

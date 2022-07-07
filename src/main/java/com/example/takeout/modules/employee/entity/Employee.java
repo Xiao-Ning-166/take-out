@@ -1,5 +1,6 @@
 package com.example.takeout.modules.employee.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -61,22 +62,26 @@ public class Employee implements Serializable {
     private Short status;
 
     /**
-     * 创建时间
+     * 创建时间。插入时自动填充
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
-     * 更新时间
+     * 更新时间。插入和更新时填充字段
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
     /**
      * 更新人
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 }
