@@ -25,3 +25,12 @@ function putApi(url, params) {
         data: params
     })
 }
+
+// delete 请求
+function deleteApi(url, params) {
+    return $axios({
+        url: url,
+        method: 'delete',
+        params: params
+    })
+}

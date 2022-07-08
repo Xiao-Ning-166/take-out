@@ -1,4 +1,4 @@
-package com.example.takeout.modules.employee.entity;
+package com.example.takeout.modules.dishes.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -13,13 +13,13 @@ import java.util.Date;
 
 /**
  * @author xiaoning
- * @date 2022/06/29
+ * @date 2022/07/08
  */
-@TableName("employee")
 @Data
-public class Employee implements Serializable {
+@TableName("dishes")
+public class Dishes implements Serializable {
 
-    private static final long serialVersionUID = -6890679422869574448L;
+    private static final long serialVersionUID = -2762961114126093492L;
 
     /**
      * 主键
@@ -28,39 +28,9 @@ public class Employee implements Serializable {
     private Long id;
 
     /**
-     * 姓名
+     * 菜品分类id
      */
-    private String name;
-
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 电话
-     */
-    private String phone;
-
-    /**
-     * 性别
-     */
-    private String sex;
-
-    /**
-     * 身份证
-     */
-    private String idCard;
-
-    /**
-     * 状态 0-禁用 1-正常
-     */
-    private Short status;
+    private Long categoryId;
 
     /**
      * 创建时间。插入时自动填充

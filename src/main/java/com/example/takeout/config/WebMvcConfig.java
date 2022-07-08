@@ -4,6 +4,7 @@ import com.example.takeout.interceptor.LoginCheckInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,7 +54,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 注册拦截器
         registry.addInterceptor(loginCheckInterceptor)
                 // 配置拦截路径
-                .addPathPatterns("/employee/**")
+                .addPathPatterns("/employee/**", "/category/**")
                 .excludePathPatterns("/employee/login", "/employee/logout");
     }
 
