@@ -4,7 +4,7 @@ function getApi(url, params) {
     return $axios({
         url: url,
         method: 'get',
-        data: params
+        params: params
     })
 }
 

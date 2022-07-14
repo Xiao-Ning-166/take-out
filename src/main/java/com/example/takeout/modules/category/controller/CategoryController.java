@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author xiaoning
  * @date 2022/07/08
@@ -46,6 +48,21 @@ public class CategoryController {
         IPage<Category> page = new Page<>(current, size);
         IPage<Category> pageInfo = categoryService.page(page, categoryQueryWrapper);
         return Result.OK(pageInfo);
+    }
+
+    /**
+     * 查询菜品分类集合 或者 套餐分类集合
+     *
+     * @param category
+     * @return
+     */
+    @GetMapping("/listByType")
+    public Result<?> listByType(Category category) {
+        LambdaQueryWrapper<Category> categoryQueryWrapper = new LambdaQueryWrapper<>();
+        categoryQueryWrapper.eq(Category::getType, category.getType());
+        categoryQueryWrapper.orderByAsc(Category::getSort);
+        List<Category> list = categoryService.list(categoryQueryWrapper);
+        return Result.OK(list);
     }
 
     /**

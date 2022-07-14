@@ -27,3 +27,9 @@ mybatis-plus:
     banner: false
     db-config:
       id-type: assign_id
+
+# 自定义配置
+take-out:
+  path:
+    # 图片上传的路径
+    upload: D:/Code/My_Project/take-out/data/img/

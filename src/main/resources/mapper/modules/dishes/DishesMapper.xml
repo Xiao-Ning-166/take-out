@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.takeout.modules.dishes.mapper.DishesMapper">
+
+    <resultMap id="dishesDTOMap" type="com.example.takeout.modules.common.dto.DishesDTO">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="category_id" property="categoryId"></result>
+        <result column="price" property="price"></result>
+        <result column="image_url" property="imageUrl"></result>
+        <result column="description" property="description"></result>
+        <result column="status" property="status"></result>
+        <result column="sort" property="sort"></result>
+        <result column="code" property="code"></result>
+        <result column="category_name" property="categoryName"></result>
+        <collection property="flavors" ofType="com.example.takeout.modules.dishes.entity.Flavor">
+            <result column="flavor_name" property="name"></result>
+            <result column="flavor_value" property="value"></result>
+        </collection>
+    </resultMap>
+
+    <!-- 分页查询菜品信息 -->
+    <select id="list" resultType="com.example.takeout.modules.common.dto.DishesDTO">
+        SELECT
+            t1.id,
+            t1.name,
+            t1.category_id,
+            t1.price,
+            t1.image_url,
+            t1.description,
+            t1.status,
+            t1.sort,
+            t1.is_delete,
+            t1.update_time,
+            t2.name AS categoryName
+        FROM
+            dishes AS t1
+            LEFT JOIN category AS t2 ON t1.category_id = t2.id
+        WHERE
+            is_delete != 1
+        ORDER BY
+            t1.update_time DESC
+    </select>
+
+    <!-- 根据id获取菜品信息 -->
+    <select id="getDishesDTOById" resultMap="dishesDTOMap">
+        SELECT
+            t1.id,
+            t1.name,
+            t1.category_id,
+            t1.price,
+            t1.image_url,
+            t1.description,
+            t1.status,
+            t1.sort,
+            t1.code,
+            t2.name AS category_name,
+            t3.name AS flavor_name,
+            t3.value AS flavor_value
+        FROM
+            dishes AS t1
+            LEFT JOIN category AS t2 ON t1.category_id = t2.id
+            LEFT JOIN flavor AS t3 ON t1.id = t3.dishes_id
+        WHERE
+            t1.id = #{id}
+    </select>
+
+    <!-- 批量修改菜品售卖状态 -->
+    <select id="batchStatus">
+        UPDATE
+            dishes
+        SET
+            status = #{status}
+        <where>
+            <if test="ids != null and ids != ''">
+                <foreach collection="ids.split(',')" separator="," open="id IN (" close=")" item="id" index="index">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量删除菜品 -->
+    <select id="batchDelete">
+        UPDATE
+            dishes
+        SET
+            is_delete = 1
+        <where>
+            <if test="ids != null and ids != ''">
+                <foreach collection="ids.split(',')" separator="," open="id IN (" close=")" item="id" index="index">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

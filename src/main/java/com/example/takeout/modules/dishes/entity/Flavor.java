@@ -9,18 +9,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * @author xiaoning
- * @date 2022/07/08
+ * @date 2022/07/12
  */
 @Data
-@TableName("dishes")
-public class Dishes implements Serializable {
+@TableName("flavor")
+public class Flavor implements Serializable {
 
-    private static final long serialVersionUID = -2762961114126093492L;
+    private static final long serialVersionUID = -2430698082663362499L;
 
     /**
      * 主键
@@ -29,49 +28,30 @@ public class Dishes implements Serializable {
     private Long id;
 
     /**
-     * 菜品名称
+     * 菜品id
+     */
+    private Long dishesId;
+
+    /**
+     * 口味名称
      */
     private String name;
 
     /**
-     * 菜品分类id
+     *
      */
-    private Long categoryId;
+    @TableField(exist = false)
+    private Boolean showOption;
 
     /**
-     * 菜品价格
+     * 口味数据
      */
-    private BigDecimal price;
-
-    /**
-     * 图片路径
-     */
-    private String imageUrl;
-
-    /**
-     * 菜品描述
-     */
-    private String description;
-
-    /**
-     * 菜品状态。0-停售 1-起售 2-售罄
-     */
-    private Short status;
-
-    /**
-     * 菜品顺序
-     */
-    private Integer sort;
+    private String value;
 
     /**
      * 是否删除
      */
     private Integer isDelete;
-
-    /**
-     * 商品码
-     */
-    private String code;
 
     /**
      * 创建时间。插入时自动填充
