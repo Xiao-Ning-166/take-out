@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.takeout.modules.common.dto.DishesDTO;
 import com.example.takeout.modules.dishes.entity.Dishes;
 
+import java.util.List;
+
 /**
  * @author xiaoning
  * @date 2022/07/08
@@ -57,4 +59,12 @@ public interface IDishesService extends IService<Dishes> {
      * @param ids
      */
     void batchDelete(String ids);
+
+    /**
+     * 通过条件获取菜品集合
+     *
+     * @param dishes
+     * @return
+     */
+    List<Dishes> listDishesByCondition(Dishes dishes);
 }

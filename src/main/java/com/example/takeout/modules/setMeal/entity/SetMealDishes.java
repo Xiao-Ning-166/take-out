@@ -13,16 +13,16 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 套餐实体类
+ * 套餐菜品关系实体类
  *
  * @author xiaoning
- * @date 2022/07/08
+ * @date 2022/07/16
  */
 @Data
-@TableName("set_meal")
-public class SetMeal implements Serializable {
+@TableName("set_meal_dishes")
+public class SetMealDishes implements Serializable {
 
-    private static final long serialVersionUID = 4888874899423045018L;
+    private static final long serialVersionUID = -3076010181387560946L;
 
     /**
      * 主键
@@ -31,46 +31,29 @@ public class SetMeal implements Serializable {
     private Long id;
 
     /**
-     * 套餐分类id
+     * 套餐id
      */
-    private Long categoryId;
+    private Long setMealId;
 
     /**
-     * 套餐名称
+     * 菜品id
      */
-    private String name;
+    private Long dishesId;
 
     /**
-     * 套餐单价
+     * 菜品名称
      */
-    private BigDecimal price;
+    private String dishesName;
 
     /**
-     * 图片路径
+     * 菜品单价
      */
-    private String imageUrl;
+    private BigDecimal dishesPrice;
 
     /**
-     * 套餐描述
+     * 菜品份数
      */
-    private String description;
-
-    /**
-     * 套餐状态。0-停售 1-起售
-     */
-    private Short status;
-
-    private Integer sort;
-
-    /**
-     * 是否删除。0-未删除 1-已删除
-     */
-    private Integer isDelete;
-
-    /**
-     * 商品编码
-     */
-    private String code;
+    private Integer dishesCount;
 
     /**
      * 创建时间。插入时自动填充

@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.takeout.modules.common.dto.DishesDTO;
 import com.example.takeout.modules.dishes.entity.Dishes;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author xiaoning
@@ -44,4 +47,12 @@ public interface DishesMapper extends BaseMapper<Dishes> {
      * @param ids
      */
     void batchDelete(String ids);
+
+    /**
+     * 通过条件获取菜品集合
+     *
+     * @param dishes
+     * @return
+     */
+    List<Dishes> listDishesByCondition(@Param("dishes") Dishes dishes);
 }

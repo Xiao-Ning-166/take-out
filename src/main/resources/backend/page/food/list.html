@@ -14,8 +14,8 @@
    <div class="dashboard-container" id="food-app">
     <div class="container">
       <div class="tableBar">
-        <el-input v-model="input" placeholder="请输入菜品名称" style="width: 250px" clearable @keyup.enter.native="handleQuery">
-          <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="loadData"></i>
+        <el-input v-model="name" placeholder="请输入菜品名称" style="width: 250px" clearable @keyup.enter.native="handleQuery">
+          <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="handleQuery"></i>
         </el-input>
         <div class="tableLab">
           <span class="span-btn delBut non" @click="batchDeleteHandler">批量删除</span>
@@ -95,7 +95,7 @@
         data() {
           return {
             loading: false,
-            input: '',
+            name: '',
             // 分页参数
             ipagination: {
               total: 0,

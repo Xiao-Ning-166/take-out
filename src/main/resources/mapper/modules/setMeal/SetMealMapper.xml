@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.takeout.modules.dishes.mapper.DishesMapper">
+<mapper namespace="com.example.takeout.modules.setMeal.mapper.SetMealMapper">
 
-    <resultMap id="dishesDTOMap" type="com.example.takeout.modules.common.dto.DishesDTO">
+    <resultMap id="setMealDTO" type="com.example.takeout.modules.common.dto.SetMealDTO">
         <id column="id" property="id"></id>
         <result column="name" property="name"></result>
         <result column="category_id" property="categoryId"></result>
+        <result column="category_name" property="categoryName"></result>
         <result column="price" property="price"></result>
         <result column="image_url" property="imageUrl"></result>
         <result column="description" property="description"></result>
         <result column="status" property="status"></result>
         <result column="sort" property="sort"></result>
         <result column="code" property="code"></result>
-        <result column="category_name" property="categoryName"></result>
-        <collection property="flavors" ofType="com.example.takeout.modules.dishes.entity.Flavor">
-            <result column="flavor_name" property="name"></result>
-            <result column="flavor_value" property="value"></result>
+        <collection property="setMealDishesList" ofType="com.example.takeout.modules.setMeal.entity.SetMealDishes">
+            <result column="set_meal_dishes_id" property="id"></result>
+            <result column="set_meal_id" property="setMealId"></result>
+            <result column="dishes_id" property="dishesId"></result>
+            <result column="dishes_name" property="dishesName"></result>
+            <result column="dishes_price" property="dishesPrice"></result>
+            <result column="dishes_count" property="dishesCount"></result>
         </collection>
     </resultMap>
 
-    <!-- 分页查询菜品信息 -->
-    <select id="list" resultType="com.example.takeout.modules.common.dto.DishesDTO">
+    <!-- 分页查询套餐信息 -->
+    <select id="list" resultType="com.example.takeout.modules.common.dto.SetMealDTO">
         SELECT
             t1.id,
             t1.name,
@@ -34,12 +38,12 @@
             t1.update_time,
             t2.name AS categoryName
         FROM
-            dishes AS t1
+            set_meal AS t1
             LEFT JOIN category AS t2 ON t1.category_id = t2.id
         <where>
             is_delete != 1
-            <if test="dishes.name != null and dishes.name != ''">
-                AND t1.name LIKE CONCAT('%', #{dishes.name}, '%')
+            <if test="setMeal.name != null and setMeal.name != ''">
+                AND t1.name LIKE CONCAT('%', #{setMeal.name}, '%')
             </if>
         </where>
         ORDER BY
@@ -47,7 +51,7 @@
     </select>
 
     <!-- 根据id获取菜品信息 -->
-    <select id="getDishesDTOById" resultMap="dishesDTOMap">
+    <select id="querySetMealById" resultMap="setMealDTO">
         SELECT
             t1.id,
             t1.name,
@@ -59,12 +63,16 @@
             t1.sort,
             t1.code,
             t2.name AS category_name,
-            t3.name AS flavor_name,
-            t3.value AS flavor_value
+            t3.id AS set_meal_dishes_id,
+            t3.set_meal_id AS set_meal_id,
+            t3.dishes_id AS dishes_id,
+            t3.dishes_name AS dishes_name,
+            t3.dishes_price AS dishes_price,
+            t3.dishes_count AS dishes_count
         FROM
-            dishes AS t1
+            set_meal AS t1
             LEFT JOIN category AS t2 ON t1.category_id = t2.id
-            LEFT JOIN flavor AS t3 ON t1.id = t3.dishes_id
+            LEFT JOIN set_meal_dishes AS t3 ON t1.id = t3.set_meal_id
         WHERE
             t1.id = #{id}
     </select>
@@ -72,7 +80,7 @@
     <!-- 批量修改菜品售卖状态 -->
     <select id="batchStatus">
         UPDATE
-            dishes
+            set_meal
         SET
             status = #{status}
         <where>
@@ -87,7 +95,7 @@
     <!-- 批量删除菜品 -->
     <select id="batchDelete">
         UPDATE
-            dishes
+            set_meal
         SET
             is_delete = 1
         <where>
@@ -95,20 +103,6 @@
                 <foreach collection="ids.split(',')" separator="," open="id IN (" close=")" item="id" index="index">
                     #{id}
                 </foreach>
-            </if>
-        </where>
-    </select>
-
-    <!-- 通过条件获取菜品集合 -->
-    <select id="listDishesByCondition" resultType="com.example.takeout.modules.dishes.entity.Dishes">
-        SELECT
-            *
-        FROM
-            dishes
-        <where>
-            status = 1
-            <if test="dishes.categoryId != null and dishes.categoryId != ''">
-                AND category_id = #{dishes.categoryId}
             </if>
         </where>
     </select>

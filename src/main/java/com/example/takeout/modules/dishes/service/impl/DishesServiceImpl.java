@@ -124,4 +124,15 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
     public void batchDelete(String ids) {
         dishesMapper.batchDelete(ids);
     }
+
+    /**
+     * 通过条件获取菜品集合
+     *
+     * @param dishes
+     * @return
+     */
+    @Override
+    public List<Dishes> listDishesByCondition(Dishes dishes) {
+        return dishesMapper.listDishesByCondition(dishes);
+    }
 }

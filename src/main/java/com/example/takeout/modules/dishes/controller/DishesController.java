@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 菜品控制器
  *
@@ -38,7 +40,8 @@ public class DishesController {
      * @return
      */
     @GetMapping("/list")
-    public Result<?> list(Dishes dishes, @RequestParam(name = "current", defaultValue = "1") Integer current,
+    public Result<?> list(Dishes dishes,
+                          @RequestParam(name = "current", defaultValue = "1") Integer current,
                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
         IPage<Dishes> dishesPage = new Page<>(current, size);
         IPage<Dishes> dishesInfo = dishesService.list(dishesPage, dishes);
@@ -98,7 +101,7 @@ public class DishesController {
     }
 
     /**
-     * 批量删除菜品状态
+     * 批量删除菜品
      *
      * @param ids
      * @return
@@ -107,6 +110,19 @@ public class DishesController {
     public Result<?> batchDelete(String ids) {
         dishesService.batchDelete(ids);
         return Result.OK().success("菜品删除成功!");
+    }
+
+    /**
+     * 通过条件获取菜品集合
+     *
+     * @param dishes
+     * @return
+     */
+    @GetMapping("/listDishes")
+    public Result<?> listDishes(Dishes dishes) {
+        List<Dishes> list = dishesService.listDishesByCondition(dishes);
+
+        return Result.OK(list);
     }
 
 }
