@@ -1,15 +1,22 @@
 package com.example.takeout.modules.common.controller;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.example.takeout.modules.user.entity.User;
 import com.example.takeout.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,7 +74,8 @@ public class CommonController {
 
     /**
      * 下载文件
-     * @param name 文件名
+     *
+     * @param name     文件名
      * @param response
      */
     @GetMapping("/download")
@@ -80,7 +88,7 @@ public class CommonController {
             byte[] buffer = new byte[1024];
             int len;
             ServletOutputStream outputStream = response.getOutputStream();
-            while((len = inputStream.read(buffer)) != -1) {
+            while ((len = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, len);
                 outputStream.flush();
             }
@@ -98,6 +106,28 @@ public class CommonController {
                 }
             }
         }
+    }
+
+
+    /**
+     * 获取验证码
+     *
+     * @param user   要获取验证码的手机号
+     * @param request
+     * @return
+     */
+    @PostMapping("/code")
+    public Result<?> getVerificationCode(@RequestBody User user, HttpServletRequest request) {
+        // 1、校验手机号
+        if (StrUtil.isBlank(user.getPhone())) {
+            return Result.error("手机号不能为空!");
+        }
+        // 2、生成验证码
+        String verificationCode = RandomUtil.randomNumbers(6);
+        request.getSession().setAttribute("verificationCode", verificationCode);
+        // 3、给用户手机发送验证码
+        log.info("验证码为 ---> {}", verificationCode);
+        return Result.OK().success("验证码已发送!");
     }
 
 }

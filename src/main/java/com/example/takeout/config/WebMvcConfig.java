@@ -55,9 +55,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginCheckInterceptor)
                 // 配置拦截路径
                 .addPathPatterns("/employee/**", "/category/**", "/dishes/**", "/setMeal/**")
+                // 移除后台管理端用户登录登出
                 .excludePathPatterns("/employee/login", "/employee/logout")
                 // 移除上传下载
-                .excludePathPatterns("/common/upload", "/common/download");
+                .excludePathPatterns("/common/upload", "/common/download")
+                // 移除前台用户登录登出
+                .excludePathPatterns("/user/login");
     }
 
     /**

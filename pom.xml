@@ -19,6 +19,7 @@
         <java.version>1.8</java.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <fastjson.version>2.0.7</fastjson.version>
+        <hutool.version>5.7.22</hutool.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,14 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
+
+        <!-- hutool工具包 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

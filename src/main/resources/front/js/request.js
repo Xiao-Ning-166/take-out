@@ -5,7 +5,7 @@
     // axios中请求配置有baseURL选项，表示请求URL公共部分
     baseURL: '/',
     // 超时
-    timeout: 10000
+    timeout: 60000
   })
   // request拦截器
   service.interceptors.request.use(config => {
@@ -15,10 +15,10 @@
     //   config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     // }
     // get请求映射params参数
-    if (config.method === 'get' && config.params) {
+    if (config.method === 'get' && config.data) {
       let url = config.url + '?';
-      for (const propName of Object.keys(config.params)) {
-        const value = config.params[propName];
+      for (const propName of Object.keys(config.data)) {
+        const value = config.data[propName];
         var part = encodeURIComponent(propName) + "=";
         if (value !== null && typeof(value) !== "undefined") {
           if (typeof value === 'object') {
@@ -33,7 +33,7 @@
         }
       }
       url = url.slice(0, -1);
-      config.params = {};
+      config.data = {};
       config.url = url;
     }
     return config
@@ -44,7 +44,7 @@
   // 响应拦截器
   service.interceptors.response.use(res => {
       console.log('---响应拦截器---',res)
-      if (res.data.code === 0 && res.data.msg === 'NOTLOGIN') {// 返回登录页面
+      if (res.data.code === 200 && res.data.msg === 'NOTLOGIN') {// 返回登录页面
         window.top.location.href = '/front/page/login.html'
       } else {
         return res.data

@@ -25,16 +25,23 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         log.info("拦截到请求：{}", request.getRequestURI());
         // 1、检查用户登录状态
         // 从session中尝试获取用户
+        // 后台用户
         Long empId = (Long) request.getSession().getAttribute("empId");
-        if (ObjectUtils.isNull(empId)) {
-            // 说明用户未登录
+        // 前台用户
+        Long userId = (Long) request.getSession().getAttribute("userId");
+        if (ObjectUtils.isNull(empId) && ObjectUtils.isNull(userId)) {
+            // 如果两个都为空，说明用户未登录
             log.error("用户未登录！！！");
             response.getWriter().write(JSON.toJSONString(Result.OK().success("NOTLOGIN")));
             return false;
         }
         // 2、说明用户已登录
         // 设置登录用户id到ThreadLocal中
-        BaseContext.setLoginUserId(empId);
+        if (ObjectUtils.isNull(userId)) {
+            BaseContext.setLoginUserId(empId);
+        } else {
+            BaseContext.setLoginUserId(userId);
+        }
         return true;
     }
 }
