@@ -27,12 +27,12 @@
             <div class="divContent">
                 <div class="divItem" v-for="(item,index) in addressList" :key="index" @click.capture="itemClick(item)">
                     <div class="divAddress">
-                        <span :class="{spanCompany:item.label === '公司',spanHome:item.label === '家',spanSchool:item.label === '学校'}">{{item.label}}</span>
-                        {{item.detail}}
+                        <span :class="{spanCompany:item.tag === '公司',spanHome:item.tag === '家',spanSchool:item.tag === '学校'}">{{item.tag}}</span>
+                        {{item.detailAddress}}
                     </div>
                     <div class="divUserPhone">
-                        <span>{{item.consignee}}</span>
-                        <span>{{item.sex === '0' ? '女士' : '先生'}}</span>
+                        <span>{{item.receiver}}</span>
+                        <span>{{item.sex === 1 ? '先生' : '女士'}}</span>
                         <span>{{item.phone}}</span>
                     </div>
                     <img src="./../images/edit.png" @click.stop.prevent="toAddressEditPage(item)"/>
@@ -51,64 +51,26 @@
             <script src="../../backend/plugins/element-ui/index.js"></script>
             <!-- 引入vant样式 -->
             <script src="./../js/vant.min.js"></script>
-            <script src="./../api/address.js"></script>
             <!-- 引入axios -->
             <script src="../../backend/plugins/axios/axios.min.js"></script>
             <script src="./../js/request.js"></script>
+            <script src="./../api/api.js"></script>
             <script>
             new Vue({
                 el:"#address",
                 data(){
                     return {
                         addressList:[
-                        //     {
-                        //     label:'公司',
-                        //     detail:'金燕龙写字楼 4层电梯口fsdfdsfsdfsdfsssssssssssss（电梯可…）',
-                        //     consignee:'周先生',//姓名
-                        //     phone:18544445566,//手机号
-                        //     isDefault:0,//是否是默认
-                        // },
-                        // {
-                        //     label:'家',
-                        //     detail:'金燕龙写字楼 4层电梯口（电梯可…）',
-                        //     consignee:'周先生',//姓名
-                        //     phone:18544445566,//手机号
-                        //     isDefault:0,//是否是默认
-                        // },
-                        // {
-                        //     label:'学校',
-                        //     detail:'金燕龙写字楼 4层电梯口（电梯可…）',
-                        //     consignee:'周先生',//姓名
-                        //     phone:18544445566,//手机号
-                        //     isDefault:0,//是否是默认
-                        // },
-                        // {
-                        //     label:'公司',
-                        //     detail:'金燕龙写字楼 4层电梯口（电梯可…）',
-                        //     consignee:'周先生',//姓名
-                        //     phone:18544445566,//手机号
-                        //     isDefault:0,//是否是默认
-                        // },
-                        // {
-                        //     label:'公司',
-                        //     detail:'金燕龙写字楼 4层电梯口（电梯可…）',
-                        //     consignee:'周先生',//姓名
-                        //     phone:18544445566,//手机号
-                        //     isDefault:0,//是否是默认
-                        // },
-                        // {
-                        //     label:'公司',
-                        //     detail:'金燕龙写字楼 4层电梯口（电梯可…）',
-                        //     consignee:'周先生',//姓名
-                        //     phone:18544445566,//手机号
-                        //     isDefault:1,//是否是默认
-                        // }
-                    ],
+                        ],
+                        url: {
+                            list: '/address/list',
+                            setDefaultAddress: '/address/default',
+                        }
                     }
                 },
                 computed:{},
                 created(){
-                    this.initData()
+                    this.loadData()
                 },
                 mounted(){},
                 methods:{
@@ -125,22 +87,25 @@
                             window.location.href= '/front/page/address-edit.html'
                         })
                     },
-                    async initData(){
-                        const res = await addressListApi()
-                        if(res.code === 1){
-                            this.addressList = res.data
-                        }else{
-                            this.$message.error(res.msg)
-                        }
-                    },
-                    async setDefaultAddress(item){
-                        if(item.id){
-                            const res = await setDefaultAddressApi({id:item.id})
-                            if(res.code === 1){
-                            this.initData()
-                            }else{
-                                this.$message.error(res.msg)
+                    loadData(){
+                        getApi(this.url.list).then((res) => {
+                            if (res.success) {
+                                this.addressList = res.data
+                            } else {
+                                this.$message.error(res.message)
                             }
+                        })
+                    },
+                    // 设置默认地址
+                    setDefaultAddress(item){
+                        if(item.id){
+                            getApi(this.url.setDefaultAddress, {id: item.id}).then((res) => {
+                                if (res.success) {
+                                    this.loadData()
+                                } else {
+                                    this.$message.error(res.message)
+                                }
+                            })
                         }
                     },
                     itemClick(item){

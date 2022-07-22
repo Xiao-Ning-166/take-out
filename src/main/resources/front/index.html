@@ -227,16 +227,17 @@
         <script src="./js/request.js"></script>
         <script src="./js/common.js"></script>
         <script src="./api/main.js"></script>
+        <script src="./api/api.js"></script>
   </body>
   <script>
       new Vue({
           el:'#main',
           data(){
             return {
-              //左边菜品类别index
+              // 左边菜品类别index
               activeType:0,
               categoryList:[],
-              categoryId:undefined,
+              categoryId: undefined,
               dishList:[],
               cartData:[],
               dialogFlavor:{
@@ -256,6 +257,10 @@
                 show:false,
                 item:{}
               },
+              url: {
+                // 得到分类集合
+                getCategoryList: '/category/listByType',
+              }
             }
           },
           computed:{
@@ -290,33 +295,41 @@
             },
           },
           mounted(){
-            this.initData()
+            this.loadData()
           },
           methods:{
-            //初始化数据
-            initData(){
-              Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
-                //获取分类数据
-                if(res[0].code === 1){
-                  this.categoryList = res[0].data
-                  if(Array.isArray(res[0].data) && res[0].data.length > 0){
-                    this.categoryId = res[0].data[0].id
-                    if(res[0].data[0].type === 1){
-                      this.getDishList()
-                    }else{
-                      this.getSetmealData()
-                    }
+            // 初始化数据
+            loadData(){
+              getApi(this.url.getCategoryList).then((res) => {
+                if (res.success) {
+                  this.categoryList = res.data
+                  if (Array.isArray(res.data) && res.data.length > 0) {
+                    this.categoryId = res.data[0].id
                   }
-                }else{
-                  this.$notify({ type:'warning', message:res[0].msg});
-                }
-                //获取菜品数据
-                if(res[1].code === 1){
-                this.cartData = res[1].data
-                }else{
-                  this.$notify({ type:'warning', message:res[1].msg});
                 }
               })
+              // Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
+              //   //获取分类数据
+              //   if(res[0].code === 1){
+              //     this.categoryList = res[0].data
+              //     if(Array.isArray(res[0].data) && res[0].data.length > 0){
+              //       this.categoryId = res[0].data[0].id
+              //       if(res[0].data[0].type === 1){
+              //         this.getDishList()
+              //       }else{
+              //         this.getSetmealData()
+              //       }
+              //     }
+              //   }else{
+              //     this.$notify({ type:'warning', message:res[0].msg});
+              //   }
+              //   //获取菜品数据
+              //   if(res[1].code === 1){
+              //   this.cartData = res[1].data
+              //   }else{
+              //     this.$notify({ type:'warning', message:res[1].msg});
+              //   }
+              // })
             },
             //分类点击
             categoryClick(index,id,type){
