@@ -66,5 +66,5 @@ public interface IDishesService extends IService<Dishes> {
      * @param dishes
      * @return
      */
-    List<Dishes> listDishesByCondition(Dishes dishes);
+    List<DishesDTO> listDishesByCondition(Dishes dishes);
 }

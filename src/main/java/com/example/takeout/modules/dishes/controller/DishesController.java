@@ -120,7 +120,7 @@ public class DishesController {
      */
     @GetMapping("/listDishes")
     public Result<?> listDishes(Dishes dishes) {
-        List<Dishes> list = dishesService.listDishesByCondition(dishes);
+        List<DishesDTO> list = dishesService.listDishesByCondition(dishes);
 
         return Result.OK(list);
     }

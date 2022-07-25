@@ -107,4 +107,35 @@
         </where>
     </select>
 
+    <!-- 根据条件查询套餐集合 -->
+    <select id="listSetMeal" resultMap="setMealDTO">
+        SELECT
+            t1.id,
+            t1.name,
+            t1.category_id,
+            t1.price,
+            t1.image_url,
+            t1.description,
+            t1.status,
+            t1.sort,
+            t1.code,
+            t2.name AS category_name,
+            t3.id AS set_meal_dishes_id,
+            t3.set_meal_id AS set_meal_id,
+            t3.dishes_id AS dishes_id,
+            t3.dishes_name AS dishes_name,
+            t3.dishes_price AS dishes_price,
+            t3.dishes_count AS dishes_count
+        FROM
+            set_meal AS t1
+            LEFT JOIN category AS t2 ON t1.category_id = t2.id
+            LEFT JOIN set_meal_dishes AS t3 ON t1.id = t3.set_meal_id
+        <where>
+            t1.status = 1
+            <if test="setMeal.categoryId != null and setMeal.categoryId != ''">
+                AND t1.category_id = #{setMeal.categoryId}
+            </if>
+        </where>
+    </select>
+
 </mapper>

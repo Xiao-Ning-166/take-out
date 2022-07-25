@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.takeout.modules.common.dto.SetMealDTO;
 import com.example.takeout.modules.setMeal.entity.SetMeal;
 
+import java.util.List;
+
 /**
  * @author xiaoning
  * @date 2022/07/08
@@ -56,4 +58,12 @@ public interface ISetMealService extends IService<SetMeal> {
      * @param ids
      */
     void batchDelete(String ids);
+
+    /**
+     * 根据条件查询套餐集合
+     *
+     * @param setMeal
+     * @return
+     */
+    List<SetMealDTO> listSetMeal(SetMeal setMeal);
 }

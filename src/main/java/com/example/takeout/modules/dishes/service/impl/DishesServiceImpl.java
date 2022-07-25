@@ -132,7 +132,7 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
      * @return
      */
     @Override
-    public List<Dishes> listDishesByCondition(Dishes dishes) {
+    public List<DishesDTO> listDishesByCondition(Dishes dishes) {
         return dishesMapper.listDishesByCondition(dishes);
     }
 }

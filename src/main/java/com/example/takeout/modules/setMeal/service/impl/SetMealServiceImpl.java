@@ -122,4 +122,15 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
     public void batchDelete(String ids) {
         setMealMapper.batchDelete(ids);
     }
+
+    /**
+     * 根据条件查询套餐集合
+     *
+     * @param setMeal
+     * @return
+     */
+    @Override
+    public List<SetMealDTO> listSetMeal(SetMeal setMeal) {
+        return setMealMapper.listSetMeal(setMeal);
+    }
 }

@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.takeout.modules.common.dto.SetMealDTO;
 import com.example.takeout.modules.setMeal.entity.SetMeal;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author xiaoning
@@ -44,4 +47,12 @@ public interface SetMealMapper extends BaseMapper<SetMeal> {
      * @param ids
      */
     void batchDelete(String ids);
+
+    /**
+     * 根据跳槽查询套餐集合
+     *
+     * @param setMeal
+     * @return
+     */
+    List<SetMealDTO> listSetMeal(@Param("setMeal") SetMeal setMeal);
 }

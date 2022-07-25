@@ -2,6 +2,7 @@ package com.example.takeout.modules.category.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.takeout.modules.category.entity.Category;
 import com.example.takeout.modules.category.service.ICategoryService;
@@ -59,7 +60,7 @@ public class CategoryController {
     @GetMapping("/listByType")
     public Result<?> listByType(Category category) {
         LambdaQueryWrapper<Category> categoryQueryWrapper = new LambdaQueryWrapper<>();
-        categoryQueryWrapper.eq(Category::getType, category.getType());
+        categoryQueryWrapper.eq(ObjectUtils.isNotNull(category.getType()), Category::getType, category.getType());
         categoryQueryWrapper.orderByAsc(Category::getSort);
         List<Category> list = categoryService.list(categoryQueryWrapper);
         return Result.OK(list);

@@ -54,5 +54,5 @@ public interface DishesMapper extends BaseMapper<Dishes> {
      * @param dishes
      * @return
      */
-    List<Dishes> listDishesByCondition(@Param("dishes") Dishes dishes);
+    List<DishesDTO> listDishesByCondition(@Param("dishes") Dishes dishes);
 }

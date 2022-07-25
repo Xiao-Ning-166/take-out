@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author xiaoning
  * @date 2022/07/18
@@ -110,5 +112,13 @@ public class SetMealController {
     public Result<?> batchDelete(String ids) {
         setMealService.batchDelete(ids);
         return Result.OK().success("套餐删除成功!");
+    }
+
+    @GetMapping("/listSetMeal")
+    public Result<?> listSetMeal(SetMeal setMeal) {
+
+        List<SetMealDTO> list = setMealService.listSetMeal(setMeal);
+
+        return Result.OK(list);
     }
 }
