@@ -30,8 +30,10 @@ public class CommonFieldHandler implements MetaObjectHandler {
         log.info("开始处理插入时要填充的字段......");
         metaObject.setValue("createTime", new Date());
         metaObject.setValue("updateTime", new Date());
-        metaObject.setValue("createUser", BaseContext.getLoginUserId());
-        metaObject.setValue("updateUser", BaseContext.getLoginUserId());
+        if (metaObject.hasSetter("createUser") && metaObject.hasSetter("updateUser")) {
+            metaObject.setValue("createUser", BaseContext.getLoginUserId());
+            metaObject.setValue("updateUser", BaseContext.getLoginUserId());
+        }
     }
 
     /**
@@ -43,6 +45,8 @@ public class CommonFieldHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("开始处理更新时要填充的字段......");
         metaObject.setValue("updateTime", new Date());
-        metaObject.setValue("updateUser", BaseContext.getLoginUserId());
+        if (metaObject.hasSetter("updateUser")) {
+            metaObject.setValue("updateUser", BaseContext.getLoginUserId());
+        }
     }
 }

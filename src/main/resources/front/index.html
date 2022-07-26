@@ -88,6 +88,7 @@
           <div class="divPrice"></div>
           <div :class="{btnSubmitActive: cartData && cartData.length > 0, btnSubmit:!cartData || cartData.length<1}" @click="toAddOrderPage">去结算</div>
         </div>
+        <!-- 选择规格弹窗 begin -->
         <van-dialog v-model="dialogFlavor.show" :show-confirm-button="false" class="dialogFlavor" ref="flavorDialog">
           <div class="dialogTitle">{{dialogFlavor.name}}</div>
           <div class="divContent">
@@ -96,8 +97,9 @@
                 <span v-for="item in JSON.parse(flavor.value)"
                 :key="item"
                 @click="flavorClick(flavor,item)"
-                :class="{spanActive:flavor.dishFlavor === item}"
-                >{{item}}</span>
+                :class="{spanActive:flavor.dishesFlavor === item}">
+                  {{item}}
+                </span>
             </div>
           </div>
           <div class="divBottom">
@@ -108,6 +110,7 @@
             <img src="./images/close.png"/>
           </div>
         </van-dialog>
+        <!-- 选择规格弹窗 end -->
         <van-popup v-model="cartDialogShow" position="bottom" :style="{ height: '50%' }" class="dialogCart">
           <div class="divCartTitle">
             <div class="title">购物车</div>
@@ -229,7 +232,6 @@
         <script src="../backend/plugins/axios/axios.min.js"></script>
         <script src="./js/request.js"></script>
         <script src="./js/common.js"></script>
-        <script src="./api/main.js"></script>
         <script src="./api/api.js"></script>
   </body>
   <script>
@@ -246,7 +248,7 @@
               dialogFlavor:{
                 name:'',
                 flavors:[],
-                dishId:undefined,
+                dishesId:undefined,
                 price:undefined,
                 show:false,
                 imageUrl:''
@@ -267,6 +269,14 @@
                 getDishesList: '/dishes/listDishes',
                 // 得到套餐集合
                 getSetMealList: '/setMeal/listSetMeal',
+                // 得到购物车菜品/套餐集合
+                getShoppingCartList: '/shoppingCart/list',
+                // 向购物车中添加一个菜品/套餐
+                add: '/shoppingCart/add',
+                // 购物车中菜品/套餐减1
+                sub: '/shoppingCart/sub',
+                // 清空购物车
+                clear: '/shoppingCart/clear',
               }
             }
           },
@@ -322,6 +332,8 @@
                   }
                 }
               })
+              // 得到购物车数据
+              this.getShoppingCarts()
               // Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
               //   //获取分类数据
               //   if(res[0].code === 1){
@@ -345,6 +357,16 @@
               //   }
               // })
             },
+            // 得到购物车内容
+            getShoppingCarts() {
+              getApi(this.url.getShoppingCartList).then((res) => {
+                if (res.success) {
+                  this.cartData = res.data
+                } else {
+                  this.$notify({ type:'warning', message:res.message});
+                }
+              })
+            },
             //分类点击
             categoryClick(index,id,type){
               this.activeType = index
@@ -356,7 +378,7 @@
               }
             },
             // 获取菜品数据
-            async getDishesList(){
+            getDishesList(){
               if (!this.categoryId) {
                 return
               }
@@ -388,7 +410,7 @@
               // }
             },
             //获取套餐数据 setMealId
-            async getSetMealList(){
+            getSetMealList(){
               if(!this.categoryId){
                 return
               }
@@ -428,65 +450,100 @@
                 this.$notify({ type:'warning', message:res.msg});
               }
             },
-            //菜单中往购物车中添加商品
-            async addCart(item){
+            // 菜单中往购物车中添加商品
+            addCart(item){
               let params = {
                 // 金额
-                amount:item.price,
+                amount: item.price,
                 // 口味  如果没有传undefined
-                dishesFlavor:item.dishFlavor,
+                dishesFlavor: item.dishesFlavor,
                 // 菜品id
-                dishesId:undefined,
+                dishesId: undefined,
                 // 套餐id
-                setMealId:undefined,
-                name:item.name,
-                imageUrl:item.imageUrl
+                setMealId: undefined,
+                name: item.name,
+                imageUrl: item.imageUrl
               }
-              if(Array.isArray(item.flavors)){//表示是菜品
+              if(Array.isArray(item.flavors)){
+                // 表示是菜品
                 params.dishesId = item.id
-              }else{//表示套餐 套餐没有口味
+              } else {
+                //表示套餐 套餐没有口味
                 params.setMealId = item.id
               }
-              const res = await addCartApi(params)
-              if(res.code === 1){
-                this.dishList.forEach(dish=>{
-                  if(dish.id === item.id){
-                    dish.number = res.data.number
-                  }
-                })
-                if(this.setMealDialog.show){
-                  item.number = res.data.number
-                }
-                this.getCartData()
-              }else{
-                this.$notify({ type:'warning', message:res.msg});
-              }
-            },
-
-            //菜单中减少选中的商品
-            async subtractCart(item){
-                let params = {
-                  dishId:item.id,
-                }
-                if(!Array.isArray(item.flavors)){
-                  params = {
-                    setmealId:item.id,
-                  }
-                }
-                const res = await updateCartApi(params)
-                if(res.code === 1){
-                this.dishList.forEach(dish=>{
-                  if(dish.id === item.id){
-                    dish.number = (res.data.number === 0 ? undefined : res.data.number)
-                  }
-                })
-                if(this.setMealDialog.show){
-                  item.number = (res.data.number === 0 ? undefined : res.data.number)
-                }
-                this.getCartData()
-                }else{
+              // 向购物车中添加菜品/套餐
+              postApi(this.url.add, params).then((res) => {
+                if (res.success) {
+                  this.dishesList.forEach(dishes => {
+                    if (dishes.id == item.id) {
+                      dishes.number = res.data.number
+                    }
+                    if(this.setMealDialog.show){
+                      item.number = res.data.number
+                    }
+                  })
+                  // 重新查询购物车信息
+                  this.getShoppingCarts()
+                } else{
                   this.$notify({ type:'warning', message:res.msg});
                 }
+              })
+              // const res = await addCartApi(params)
+              // if(res.code === 1){
+              //   this.dishList.forEach(dish=>{
+              //     if(dish.id === item.id){
+              //       dish.number = res.data.number
+              //     }
+              //   })
+              //   if(this.setMealDialog.show){
+              //     item.number = res.data.number
+              //   }
+              //   this.getCartData()
+              // }else{
+              //   this.$notify({ type:'warning', message:res.msg});
+              // }
+            },
+
+            // 菜单中减少选中的商品
+            subtractCart(item){
+              let params = {
+                dishesId:item.id,
+              }
+              if(!Array.isArray(item.flavors)){
+                params = {
+                  setMealId:item.id,
+                }
+              }
+              postApi(this.url.sub, params).then((res) => {
+                if (res.success) {
+                  this.dishesList.forEach(dish=>{
+                    if(dish.id === item.id){
+                      dish.number = (res.data.number === 0 ? undefined : res.data.number)
+                    }
+                  })
+                  if(this.setMealDialog.show){
+                    item.number = (res.data.number === 0 ? undefined : res.data.number)
+                  }
+                  // 重新获得购物车数据
+                  this.getShoppingCarts()
+                } else {
+                  this.$notify({ type: 'warning', message: res.message});
+                }
+              })
+              // const res = await updateCartApi(params)
+              // if(res.code === 1){
+              // this.dishList.forEach(dish=>{
+              //   if(dish.id === item.id){
+              //     dish.number = (res.data.number === 0 ? undefined : res.data.number)
+              //   }
+              // })
+              // if(this.setMealDialog.show){
+              //   item.number = (res.data.number === 0 ? undefined : res.data.number)
+              // }
+              // this.getCartData()
+              // }else{
+              //   this.$notify({ type:'warning', message:res.msg});
+              // }
             },
 
             //展开购物车
@@ -495,69 +552,115 @@
                 this.cartDialogShow = true
               }
             },
-            //购物车中增加商品数量
-            async cartNumAdd(item){
+            // 购物车中增加商品数量
+            cartNumAdd(item){
               let params = {
-                amount:item.amount,//金额
-                dishFlavor:item.dishFlavor,//口味  如果没有传undefined
-                dishId:item.dishId,//菜品id
-                setmealId:item.setmealId,//套餐id
+                // 金额
+                amount:item.amount,
+                // 口味  如果没有传undefined
+                dishesFlavor:item.dishesFlavor,
+                // 菜品id
+                dishesId:item.dishesId,
+                // 套餐id
+                setMealId:item.setMealId,
                 name:item.name,
                 imageUrl:item.imageUrl
               }
-              const res = await addCartApi(params)
-              if(res.code === 1){
-                this.dishList.forEach(dish=>{
-                  if(dish.id === (item.dishId || item.setmealId)){
-                    dish.number = res.data.number
-                  }
-                })
-                console.log(this.dishList)
-                this.getCartData()
-              }else{
-                this.$notify({ type:'warning', message:res.msg});
-              }
+              postApi(this.url.add, params).then((res) => {
+                if (res.success) {
+                  this.dishesList.forEach(dishes => {
+                    if (dishes.id === (item.dishesId || item.setMealId)) {
+                      dishes.number = res.data.number
+                    }
+                  })
+                  // if (this.setMealDialog.show) {
+                  //   item.number = res.data.number
+                  // }
+                  this.getShoppingCarts()
+                } else {
+                  this.$notify({ type: 'warning', message: res.message});
+                }
+              })
+              // const res = await addCartApi(params)
+              // if(res.code === 1){
+              //   this.dishList.forEach(dish=>{
+              //     if(dish.id === (item.dishId || item.setmealId)){
+              //       dish.number = res.data.number
+              //     }
+              //   })
+              //   console.log(this.dishList)
+              //   this.getCartData()
+              // }else{
+              //   this.$notify({ type:'warning', message:res.msg});
+              // }
             },
             //购物车中减少商品数量
-            async cartNumberSubtract(item){
+            cartNumberSubtract(item){
               let params = {
-                  dishId:item.dishId,
-                  setmealId:item.setmealId,
+                  dishesId: item.dishesId,
+                  setMealId: item.setMealId,
                 }
-                const res = await updateCartApi(params)
-                if(res.code === 1){
-                this.dishList.forEach(dish=>{
-                  if(dish.id === (item.dishId || item.setmealId)){
-                    dish.number = (res.data.number === 0 ? undefined : res.data.number)
-                  }
-                })
-                this.getCartData()
-                }else{
-                  this.$notify({ type:'warning', message:res.msg});
+              postApi(this.url.sub, params).then((res) => {
+                if (res.success) {
+                  this.dishesList.forEach(dishes => {
+                    if(dishes.id === (item.dishesId || item.setMealId)){
+                      dishes.number = (res.data.number === 0 ? undefined : res.data.number)
+                    }
+                  })
+                  // if(this.setMealDialog.show){
+                  //   item.number = (res.data.number === 0 ? undefined : res.data.number)
+                  // }
+                  // 重新获得购物车数据
+                  this.getShoppingCarts()
+                } else {
+                  this.$notify({ type: 'warning', message: res.message});
                 }
+              })
+                // const res = await updateCartApi(params)
+                // if(res.code === 1){
+                // this.dishList.forEach(dish=>{
+                //   if(dish.id === (item.dishId || item.setmealId)){
+                //     dish.number = (res.data.number === 0 ? undefined : res.data.number)
+                //   }
+                // })
+                // this.getCartData()
+                // }else{
+                //   this.$notify({ type:'warning', message:res.msg});
+                // }
             },
 
             //修改商品列表中的数据number
             changeDishList(item){
-              for(let ele of this.dishList){
-                if(ele.id === (item.setmealId || item.dishId)){
+              for(let ele of this.dishesList){
+                if(ele.id === (item.setMealId || item.dishesId)){
                   ele.number = item.number
                 }
               }
             },
 
             //清空购物车
-            async clearCart(){
-                const res = await clearCartApi()
-                if(res.code === 1){
-                  for(let ele of this.dishList){
+            clearCart(){
+              deleteApi(this.url.clear).then((res) => {
+                if (res.success) {
+                  for(let ele of this.dishesList){
                     ele.number = undefined
                   }
                   this.cartData = []
                   this.cartDialogShow = false
-                }else{
-                  this.$notify({ type:'warning', message:res.msg});
+                } else {
+                  this.$notify({ type: 'warning', message: res.message});
                 }
+              })
+              // const res = await clearCartApi()
+              // if(res.code === 1){
+              //   for(let ele of this.dishList){
+              //     ele.number = undefined
+              //   }
+              //   this.cartData = []
+              //   this.cartDialogShow = false
+              // }else{
+              //   this.$notify({ type:'warning', message:res.msg});
+              // }
             },
             //点击选择规格
             chooseFlavorClick(item){
@@ -578,40 +681,36 @@
               }
             },
             flavorClick(flavor,item){
-              flavor.dishFlavor = item
+              flavor.dishesFlavor = item
               //强制刷新dialog的dom
               this.dialogFlavor.show = false
               this.dialogFlavor.show = true
             },
-            //选择规格加入购物车
+            // 选择规格加入购物车
             dialogFlavorAddCart(){
               const dialogFlavor = this.dialogFlavor
               let flag = true
-              let dishFlavor = []
+              let dishesFlavor = []
               dialogFlavor.flavors.forEach(item=>{
-                if(item.dishFlavor){
-                  dishFlavor.push(item.dishFlavor)
-                }else{
-                      flag = false
-                      Notify({ type: 'warning', message: '请选择'+ item.name });
+                if(item.dishesFlavor){
+                  dishesFlavor.push(item.dishesFlavor)
+                } else {
+                  flag = false
+                  this.$notify({ type: 'warning', message: '请选择'+ item.name });
                 }
               })
               if(flag){
                 this.addCart({
-                  price:dialogFlavor.price,
-                  dishFlavor:dishFlavor.join(","),
-                  id:dialogFlavor.dishId,
-                  flavors:[],
-                  imageUrl:dialogFlavor.imageUrl,
-                  name:dialogFlavor.name
+                  price: dialogFlavor.price,
+                  dishesFlavor: dishesFlavor.join(","),
+                  id: dialogFlavor.dishesId,
+                  flavors: [],
+                  imageUrl: dialogFlavor.imageUrl,
+                  name: dialogFlavor.name
                 })
                 this.dialogFlavor.show = false
               }
 
-            },
-            //网络图片路径转换
-            imgPathConvert(path){
-              return imgPath(path)
             },
             //跳转到去结算界面
             toAddOrderPage(){
