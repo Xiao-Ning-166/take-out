@@ -27,9 +27,9 @@
             <div class="divContent">
                 <div class="divAddress">
                     <div @click="toAddressPage">
-                        <div class="address">{{address.detail}}</div>
+                        <div class="address">{{address.detailAddress}}</div>
                         <div class="name">
-                            <span>{{address.consignee}}{{address.sex === '1' ? '先生':'女士'}}</span>
+                            <span>{{address.receiver}}{{address.sex === 1 ? '先生':'女士'}}</span>
                             <span>{{address.phone}}</span>
                         </div>
                         <i class="el-icon-arrow-right"></i>
@@ -42,7 +42,7 @@
                     <div class="divSplit"></div>
                     <div class="itemList">
                         <div class="item" v-for="(item,index) in cartData" :key="index">
-                            <el-image :src="imgPathConvert(item.image)">
+                            <el-image :src="item.imageUrl">
                                 <div slot="error" class="image-slot">
                                     <img src="./../images/noImg.png"/>
                                 </div>
@@ -95,21 +95,36 @@
         <script src="./../js/common.js"></script>
         <script src="./../api/main.js"></script>
         <script src="./../api/order.js"></script>
+        <script src="./../api/api.js"></script>
         <script>
             new Vue({
                 el:"#add_order",
                 data(){
                     return {
                         address:{
-                            phone:'',//手机号
-                            consignee:'',//姓名
-                            detail:'',//详细地址
-                            sex:'1',
-                            id:undefined
+                            // 手机号
+                            phone:'',
+                            // 姓名
+                            receiver:'',
+                            // 详细地址
+                            detailAddress: '',
+                            sex: 1,
+                            id: undefined
                         },
-                        finishTime:'',//送达时间
-                        cartData:[],
-                        note:''//备注信息
+                        // 送达时间
+                        finishTime: '',
+                        // 购物车数据
+                        cartData: [],
+                        // 备注信息
+                        note: '',
+                        url: {
+                            // 获取默认收货地址
+                            default: '/address/default',
+                            // 获取购物车信息
+                            shoppingCart: '/shoppingCart/list',
+                            // 添加订单
+                            add: '/order/add',
+                        }
                     }
                 },
                 computed:{
@@ -133,30 +148,32 @@
                     }
                 },
                 created(){
-                    this.initData()
+                    this.loadData()
                 },
                 mounted(){},
                 methods:{
                     goBack(){
                         history.go(-1)
                     },
-                    initData(){
+                    loadData(){
                         //获取默认的地址
                         this.defaultAddress()
                         //获取购物车的商品
                         this.getCartData()
+                        // 得到送达时间
+                        this.getFinishTime()
                     },
                     //获取默认地址
-                    async defaultAddress(){
-                        const res = await  getDefaultAddressApi()
-                        if(res.code === 1){
-                           this.address = res.data
-                           this.getFinishTime()
-                        }else{
-                            window.requestAnimationFrame(()=>{
-                                window.location.href = '/front/page/address-edit.html'
-                            })
-                        }
+                    defaultAddress(){
+                        getApi(this.url.default).then((res) => {
+                            if (res.success) {
+                                this.address = res.data
+                            } else {
+                                window.requestAnimationFrame(()=>{
+                                    window.location.href = '/front/page/address-edit.html'
+                                })
+                            }
+                        })
                     },
                     //获取送达时间
                     getFinishTime(){
@@ -177,28 +194,31 @@
                         })
                     },
                     //获取购物车数据
-                    async getCartData(){
-                        const res = await cartListApi({})
-                        if(res.code === 1){
-                            this.cartData = res.data
-                        }else{
-                            this.$notify({ type:'warning', message:res.msg});
-                        }
+                    getCartData(){
+                        getApi(this.url.shoppingCart).then((res) => {
+                            if (res.success) {
+                                this.cartData = res.data
+                            } else {
+                                this.$notify({ type: 'warning', message: res.message});
+                            }
+                        })
                     },
-                    async goToPaySuccess(){
+                    // 支付
+                    goToPaySuccess(){
                         const params = {
-                            remark:this.note,
-                            payMethod:1,
-                            addressBookId:this.address.id
+                            remark: this.note,
+                            payMethod: 1,
+                            addressId: this.address.id
                         }
-                        const res = await addOrderApi(params)
-                        if(res.code === 1){
-                            window.requestAnimationFrame(()=>{
-                                window.location.replace('/front/page/pay-success.html')
-                            })
-                        }else{
-                            this.$notify({ type:'warning', message:res.msg});
-                        }
+                        postApi(this.url.add, params).then((res) => {
+                            if (res.success) {
+                                window.requestAnimationFrame(()=>{
+                                    window.location.replace('/front/page/pay-success.html')
+                                })
+                            } else {
+                                this.$notify({ type: 'warning', message: res.message});
+                            }
+                        })
                     },
                     //网络图片路径转换
                     imgPathConvert(path){

@@ -43,24 +43,24 @@
                     <i class="el-icon-arrow-right"></i>
                 </div>
             </div>
-            <div class="divOrders" v-if="order[0]">
+            <div class="divOrders" v-if="order">
                 <div class="title">最新订单</div>
                 <div class="timeStatus">
-                    <span>{{order[0].orderTime}}</span>
-                    <span>{{getStatus(order[0].status)}}</span>
+                    <span>{{order.orderTime}}</span>
+                    <span>{{getStatus(order.status)}}</span>
                     <!-- <span>正在派送</span> -->
                 </div>
                 <div class="dishList">
-                    <div v-for="(item,index) in order[0].orderDetails" :key="index" class="item">
+                    <div v-for="(item,index) in order.orderDetails" :key="index" class="item">
                         <span>{{item.name}}</span>
                         <span>x{{item.number}}</span>
                     </div>
                 </div>
                 <div class="result">
-                    <span>共{{order[0].sumNum}} 件商品,实付</span>
-                    <span class="price">￥{{order[0].amount}}</span>
+                    <span>共 {{order.total}} 件商品，实付</span>
+                    <span class="price">￥{{order.amount}}</span>
                 </div>
-                <div class="btn" v-if="order[0].status === 4">
+                <div class="btn" v-if="order.status === 4">
                     <div class="btnAgain" @click="addOrderAgain">再来一单</div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                             number:undefined,//数量
                         }],//明细
                         amount:undefined,//实收金额
-                        sumNum:0,//菜品总数
+                        total:0,//菜品总数
                     }],
                     user: {
                         username: '',
@@ -110,6 +110,7 @@
                     url: {
                         // 获取用户信息
                         userInfo: '/user/info',
+                        lastOrder: '/order/last',
                     }
                 }
             },
@@ -148,24 +149,15 @@
                         }
                     })
                 },
-                async getLatestOrder(){
-                    const params = {
-                        page:1,
-                        pageSize:1
-                    }
-                    const res = await orderPagingApi(params)
-                    if(res.code === 1){
-                        this.order = res.data.records
-                        if(this.order && this.order[0].orderDetails){
-                            let number = 0
-                            this.order[0].orderDetails.forEach(item=>{
-                                number += item.number
-                            })
-                            this.order[0].sumNum = number
+                // 得到最新订单数据
+                getLatestOrder(){
+                    getApi(this.url.lastOrder).then((res) => {
+                        if (res.success) {
+                            this.order = res.data
+                        } else {
+                            this.$notify({ type: 'warning', message: res.message});
                         }
-                    }else{
-                        this.$notify({ type:'warning', message:res.msg});
-                    }
+                    })
                 },
                 getStatus(status){
                     let str = ''

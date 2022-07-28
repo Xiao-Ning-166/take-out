@@ -99,7 +99,7 @@
                     // 设置默认地址
                     setDefaultAddress(item){
                         if(item.id){
-                            getApi(this.url.setDefaultAddress, {id: item.id}).then((res) => {
+                            putApi(this.url.setDefaultAddress + "/" + item.id).then((res) => {
                                 if (res.success) {
                                     this.loadData()
                                 } else {

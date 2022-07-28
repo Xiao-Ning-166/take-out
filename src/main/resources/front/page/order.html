@@ -44,7 +44,7 @@
                             </div>
                         </div>
                         <div class="result">
-                            <span>共{{order.sumNum}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
+                            <span>共 {{order.sumNum}} 件商品，实付</span><span class="price">￥{{order.amount}}</span>
                         </div>
                         <div class="btn" v-if="order.status === 4">
                             <div class="btnAgain" @click="addOrderAgain(order)">再来一单</div>
@@ -69,23 +69,27 @@
         <script src="../../backend/plugins/axios/axios.min.js"></script>
         <script src="./../js/request.js"></script>
         <script src="./../api/order.js"></script>
+        <script src="./../api/api.js"></script>
         <script>
         new Vue({
             el:"#order",
             data(){
                 return {
-                    paging:{
-                        page:1,
-                        pageSize:5
+                    pagination:{
+                        current: 1,
+                        size: 5
                     },
                     orderList:[],
                     loading:false,
-                    finished:false
+                    finished:false,
+                    url: {
+                        list: '/order/list'
+                    }
                 }
             },
             computed:{},
             created(){
-                this.initData()
+                this.loadData()
             },
             mounted(){},
             methods:{
@@ -100,35 +104,57 @@
                         history.go(-1)
                     }
                 },
-                initData(){
+                loadData(){
                     this.getList()
                 },
-                async getList(){
+                getList(){
                     if(this.finished){
                         this.loading = false;
                         return
                     }
-                    const res = await orderPagingApi(this.paging)
-                    if(res.code === 1){
-                        this.orderList.push(...res.data.records)
-                        let records = res.data.records
-                        if(records && Array.isArray(records)){
-                            records.forEach(item=>{
-                                let number = 0
-                                item.orderDetails.forEach(ele=>{
-                                    number += ele.number
+                    getApi(this.url.list, this.pagination).then((res) => {
+                        if (res.success) {
+                            this.orderList.push(...res.data.records)
+                            let records = res.data.records
+                            if(records && Array.isArray(records)){
+                                records.forEach(item=>{
+                                    let number = 0
+                                    item.orderDetails.forEach(ele=>{
+                                        number += ele.number
+                                    })
+                                    item.sumNum = number
                                 })
-                                item.sumNum = number
-                            })
+                            }
+                            this.loading = false;
+                            if(this.pagination.current >= res.data.pages){
+                                this.finished = true;
+                            }
+                            this.pagination.current = this.pagination.current + 1
+                        } else {
+                            this.$notify({ type: 'warning', message: res.message});
                         }
-                        this.loading = false;
-                        if(this.paging.page >= res.data.pages){
-                            this.finished = true;
-                        }
-                        this.paging.page = this.paging.page + 1
-                    }else{
-                        this.$notify({ type:'warning', message:res.msg});
-                    }
+                    })
+                    // const res = await orderPagingApi(this.paging)
+                    // if(res.code === 1){
+                    //     this.orderList.push(...res.data.records)
+                    //     let records = res.data.records
+                    //     if(records && Array.isArray(records)){
+                    //         records.forEach(item=>{
+                    //             let number = 0
+                    //             item.orderDetails.forEach(ele=>{
+                    //                 number += ele.number
+                    //             })
+                    //             item.sumNum = number
+                    //         })
+                    //     }
+                    //     this.loading = false;
+                    //     if(this.paging.page >= res.data.pages){
+                    //         this.finished = true;
+                    //     }
+                    //     this.paging.page = this.paging.page + 1
+                    // }else{
+                    //     this.$notify({ type:'warning', message:res.msg});
+                    // }
                 },
                 async addOrderAgain(order){
                     const res = await orderAgainApi({id:order.id})

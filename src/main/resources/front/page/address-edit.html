@@ -28,12 +28,12 @@
                 <div class="divItem">
                    <span>联系人：</span>
                    <el-input placeholder=" 请填写收货人的姓名" v-model="form.receiver" :maxlength="50" class="inputUser"/></el-input>
-                   <span class="spanChecked" @click="form.sex = '1'">
-                    <i :class="{iActive:form.sex === '1'}"></i>
+                   <span class="spanChecked" @click="form.sex = 1">
+                    <i :class="{iActive:form.sex === 1}"></i>
                     先生
                    </span>
-                   <span class="spanChecked" @click="form.sex = '2'">
-                    <i :class="{iActive:form.sex === '2'}"></i>
+                   <span class="spanChecked" @click="form.sex = 2">
+                    <i :class="{iActive:form.sex === 2}"></i>
                     女士
                 </span>
                 </div>

@@ -12,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -116,11 +118,23 @@ public class AddressController {
      * @param id
      * @return
      */
-    @GetMapping("/default")
-    public Result<?> setDefaultAddress(Long id) {
+    @PutMapping("/default/{id}")
+    public Result<?> setDefaultAddress(@PathVariable Long id) {
         Long userId = BaseContext.getLoginUserId();
         addressService.setDefaultAddress(id, userId);
 
         return Result.OK();
+    }
+
+    /**
+     * 得到默认收货地址
+     *
+     * @return
+     */
+    @GetMapping("/default")
+    public Result<?> getDefaultAddress() {
+        Address address = addressService.getDefaultAddress();
+
+        return Result.OK(address);
     }
 }
