@@ -8,6 +8,7 @@ import com.example.takeout.modules.user.service.IUserService;
 import com.example.takeout.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,13 +30,18 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @PostMapping("/login")
     public Result<?> login(@RequestBody Map<String, Object> map, HttpServletRequest request) {
         // 1、得到用户输入的验证码、手机号
         String code = map.get("code").toString();
         String phone = map.get("phone").toString();
-        // 2、得到该用户真正的验证码
-        String realCode = request.getSession().getAttribute("verificationCode").toString();
+        // 2、从Redis中得到该用户真正的验证码
+        // String realCode = request.getSession().getAttribute("verificationCode").toString();
+        String realCode = (String) redisTemplate.opsForValue().get(phone);
+
         // 3、判断用户登录验证码
         if (StrUtil.isBlank(code) || StrUtil.isBlank(realCode)) {
             return Result.error("验证码错误!");

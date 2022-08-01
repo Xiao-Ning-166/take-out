@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.takeout.modules.user.entity.User;
 import com.example.takeout.utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 公共方法
@@ -37,6 +40,9 @@ public class CommonController {
 
     @Value("${take-out.path.upload}")
     private String uploadPath;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 上传文件
@@ -124,9 +130,14 @@ public class CommonController {
         }
         // 2、生成验证码
         String verificationCode = RandomUtil.randomNumbers(6);
-        request.getSession().setAttribute("verificationCode", verificationCode);
-        // 3、给用户手机发送验证码
+        // request.getSession().setAttribute("verificationCode", verificationCode);
+
+        // 3、将验证码保存到Redis中
+        redisTemplate.opsForValue().set(user.getPhone(), verificationCode, 5, TimeUnit.MINUTES);
+
+        // 4、给用户手机发送验证码
         log.info("验证码为 ---> {}", verificationCode);
+
         return Result.OK().success("验证码已发送!");
     }
 

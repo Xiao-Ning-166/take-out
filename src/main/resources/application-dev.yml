@@ -15,6 +15,12 @@ spring:
       # 上传文件大小限制
       max-file-size: 10MB
 
+  # redis相关配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 1
+
 # mybatis-plus相关配置
 mybatis-plus:
   # 配置xml文件所在位置
