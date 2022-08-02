@@ -12,6 +12,8 @@ import com.example.takeout.modules.dishes.service.IDishesService;
 import com.example.takeout.modules.dishes.service.IFlavorService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,7 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
      * @param dishesDTO
      */
     @Override
+    @CacheEvict(value = "dishes", allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public void add(DishesDTO dishesDTO) {
         Dishes dishes = new Dishes();
@@ -83,6 +86,7 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "dishes", allEntries = true)
     public void edit(DishesDTO dishesDTO) {
         Dishes dishes = new Dishes();
         BeanUtils.copyProperties(dishesDTO, dishes);
@@ -111,6 +115,7 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
      * @param status
      */
     @Override
+    @CacheEvict(value = "dishes", allEntries = true)
     public void batchStatus(String ids, Integer status) {
         dishesMapper.batchStatus(ids, status);
     }
@@ -121,6 +126,7 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
      * @param ids
      */
     @Override
+    @CacheEvict(value = "dishes", allEntries = true)
     public void batchDelete(String ids) {
         dishesMapper.batchDelete(ids);
     }
@@ -132,6 +138,7 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
      * @return
      */
     @Override
+    @Cacheable(value = "dishes", key = "#dishes.categoryId")
     public List<DishesDTO> listDishesByCondition(Dishes dishes) {
         return dishesMapper.listDishesByCondition(dishes);
     }

@@ -133,7 +133,7 @@ public class CommonController {
         // request.getSession().setAttribute("verificationCode", verificationCode);
 
         // 3、将验证码保存到Redis中
-        redisTemplate.opsForValue().set(user.getPhone(), verificationCode, 5, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("login::" + user.getPhone(), verificationCode, 5, TimeUnit.MINUTES);
 
         // 4、给用户手机发送验证码
         log.info("验证码为 ---> {}", verificationCode);

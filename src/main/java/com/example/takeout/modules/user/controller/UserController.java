@@ -40,7 +40,7 @@ public class UserController {
         String phone = map.get("phone").toString();
         // 2、从Redis中得到该用户真正的验证码
         // String realCode = request.getSession().getAttribute("verificationCode").toString();
-        String realCode = (String) redisTemplate.opsForValue().get(phone);
+        String realCode = (String) redisTemplate.opsForValue().get("login::" + phone);
 
         // 3、判断用户登录验证码
         if (StrUtil.isBlank(code) || StrUtil.isBlank(realCode)) {

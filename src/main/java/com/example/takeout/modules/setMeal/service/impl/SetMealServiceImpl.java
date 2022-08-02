@@ -11,6 +11,8 @@ import com.example.takeout.modules.setMeal.service.ISetMealDishesService;
 import com.example.takeout.modules.setMeal.service.ISetMealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "set_meal", allEntries = true)
     public void add(SetMealDTO setMealDTO) {
         // 1、保存套餐基本信息
         SetMeal setMeal = new SetMeal();
@@ -82,6 +85,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "set_meal", allEntries = true)
     public void edit(SetMealDTO setMealDTO) {
         // 1、更新套餐基本信息
         SetMeal setMeal = new SetMeal();
@@ -109,6 +113,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
      * @param status
      */
     @Override
+    @CacheEvict(value = "set_meal", allEntries = true)
     public void batchStatus(String ids, Integer status) {
         setMealMapper.batchStatus(ids, status);
     }
@@ -119,6 +124,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
      * @param ids
      */
     @Override
+    @CacheEvict(value = "set_meal", allEntries = true)
     public void batchDelete(String ids) {
         setMealMapper.batchDelete(ids);
     }
@@ -130,6 +136,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
      * @return
      */
     @Override
+    @Cacheable(value = "set_meal", key = "#setMeal.categoryId")
     public List<SetMealDTO> listSetMeal(SetMeal setMeal) {
         return setMealMapper.listSetMeal(setMeal);
     }
