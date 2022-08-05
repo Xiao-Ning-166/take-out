@@ -42,6 +42,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         log.info("正在映射静态资源......");
         registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
         registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
+
+        // swagger的静态资源映射
+        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     /**
@@ -61,7 +66,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 // 移除上传下载
                 .excludePathPatterns("/common/upload", "/common/download")
                 // 移除前台用户登录登出
-                .excludePathPatterns("/user/login");
+                .excludePathPatterns("/user/login")
+                // 移除Swagger的静态资源
+                .excludePathPatterns("/swagger-ui.html", "/doc.html", "/webjars/**");
     }
 
     /**

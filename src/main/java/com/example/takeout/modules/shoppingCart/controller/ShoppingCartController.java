@@ -3,6 +3,8 @@ package com.example.takeout.modules.shoppingCart.controller;
 import com.example.takeout.modules.shoppingCart.entity.ShoppingCart;
 import com.example.takeout.modules.shoppingCart.service.IShoppingCartService;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/shoppingCart")
+@Api(tags = "购物车管理")
 public class ShoppingCartController {
 
     @Autowired
@@ -30,6 +33,7 @@ public class ShoppingCartController {
      * @return
      */
     @GetMapping("/list")
+    @ApiOperation(value = "列表查询", notes = "列表查询")
     public Result<?> list() {
         List<ShoppingCart> list = shoppingCartService.listShoppingCart();
 
@@ -43,6 +47,7 @@ public class ShoppingCartController {
      * @return
      */
     @PostMapping("/add")
+    @ApiOperation(value = "购物车中添加物品", notes = "购物车中添加物品")
     public Result<?> add(@RequestBody ShoppingCart shoppingCart) {
         ShoppingCart newShoppingCart = shoppingCartService.add(shoppingCart);
 
@@ -56,6 +61,7 @@ public class ShoppingCartController {
      * @return
      */
     @PostMapping("/sub")
+    @ApiOperation(value = "购物车中减少物品", notes = "购物车中减少物品")
     public Result<?> sub(@RequestBody ShoppingCart shoppingCart) {
         ShoppingCart newShoppingCart = shoppingCartService.sub(shoppingCart);
 
@@ -68,6 +74,7 @@ public class ShoppingCartController {
      * @return
      */
     @DeleteMapping("/clear")
+    @ApiOperation(value = "清空购物车", notes = "清空购物车")
     public Result<?> clear() {
         shoppingCartService.clear();
 

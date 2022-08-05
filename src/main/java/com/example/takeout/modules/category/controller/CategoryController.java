@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.takeout.modules.category.entity.Category;
 import com.example.takeout.modules.category.service.ICategoryService;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/category")
+@Api(tags = "分类管理")
 public class CategoryController {
 
     @Autowired
@@ -41,6 +44,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/list")
+    @ApiOperation(value = "分页查询", notes = "分页查询")
     public Result<?> list(Category category,
                           @RequestParam(name = "current", defaultValue = "1") Integer current,
                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -58,6 +62,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/listByType")
+    @ApiOperation(value = "查询菜品或套餐的分类集合", notes = "查询菜品或套餐的分类集合")
     public Result<?> listByType(Category category) {
         LambdaQueryWrapper<Category> categoryQueryWrapper = new LambdaQueryWrapper<>();
         categoryQueryWrapper.eq(ObjectUtils.isNotNull(category.getType()), Category::getType, category.getType());
@@ -73,6 +78,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/add")
+    @ApiOperation(value = "添加分类信息", notes = "添加分类信息")
     public Result<?> add(@RequestBody Category category) {
         categoryService.add(category);
 
@@ -86,6 +92,7 @@ public class CategoryController {
      * @return
      */
     @PutMapping("/edit")
+    @ApiOperation(value = "修改分类信息", notes = "修改分类信息")
     public Result<?> edit(@RequestBody Category category) {
         categoryService.updateById(category);
 
@@ -99,6 +106,7 @@ public class CategoryController {
      * @return
      */
     @DeleteMapping("/delete")
+    @ApiOperation(value = "删除分类信息", notes = "删除分类信息")
     public Result<?> delete(Long id) {
 
         categoryService.delete(id);

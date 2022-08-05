@@ -1,6 +1,8 @@
 package com.example.takeout.utils;
 
 import com.example.takeout.constant.CommonConstant;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.io.Serializable;
  * @date 2022/06/29
  */
 @Data
+@ApiModel(value="公共返回对象")
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = -1868179996273105384L;
@@ -18,21 +21,25 @@ public class Result<T> implements Serializable {
     /**
      * 是否成功
      */
+    @ApiModelProperty(value = "成功标志")
     private Boolean success;
 
     /**
      * 状态码
      */
+    @ApiModelProperty(value = "返回代码")
     private Integer code;
 
     /**
      * 返回信息
      */
+    @ApiModelProperty(value = "返回处理消息")
     private String message;
 
     /**
      * 返回数据
      */
+    @ApiModelProperty(value = "返回数据对象")
     private T data;
 
     public Result() {

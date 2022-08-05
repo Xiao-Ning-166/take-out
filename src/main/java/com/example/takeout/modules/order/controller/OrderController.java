@@ -7,6 +7,8 @@ import com.example.takeout.modules.common.dto.OrdersDTO;
 import com.example.takeout.modules.order.entity.Orders;
 import com.example.takeout.modules.order.service.IOrdersService;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/order")
+@Api(tags = "订单管理")
 public class OrderController {
 
     @Autowired
     private IOrdersService orderService;
 
     @GetMapping("/list")
+    @ApiOperation(value = "分页查询", notes = "分页查询")
     public Result<?> list(@RequestParam(name = "current", defaultValue = "1") Integer current,
                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
         IPage<OrdersDTO> page = new Page<>(current, size);
@@ -43,6 +47,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/last")
+    @ApiOperation(value = "查询用户最新订单", notes = "查询用户最新订单")
     public Result<?> getLastOrder() {
         OrdersDTO ordersDTO = orderService.getLastOrder();
 
@@ -56,6 +61,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("/add")
+    @ApiOperation(value = "添加订单", notes = "添加订单")
     public Result<?> add(@RequestBody Orders order) {
 
         orderService.add(order);

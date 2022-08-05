@@ -1,4 +1,4 @@
-package com.example.takeout.modules.employee;
+package com.example.takeout.modules.employee.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,6 +9,8 @@ import com.example.takeout.constant.CommonConstant;
 import com.example.takeout.modules.employee.entity.Employee;
 import com.example.takeout.modules.employee.service.IEmployeeService;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
@@ -31,6 +33,7 @@ import java.util.Date;
 @Slf4j
 @RestController
 @RequestMapping("/employee")
+@Api(tags = "员工管理")
 public class EmployeeController {
 
     @Autowired
@@ -42,6 +45,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/login")
+    @ApiOperation(value = "后台用户登录", notes = "后台用户登录")
     public Result<?> login(@RequestBody Employee employee, HttpServletRequest request) {
         // 1、判断相关参数是否为空
         if (StringUtils.isEmpty(employee.getUsername()) || StringUtils.isEmpty(employee.getPassword())) {
@@ -78,6 +82,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/logout")
+    @ApiOperation(value = "后台员工登出", notes = "后台员工登出")
     public Result<?> logout(HttpServletRequest request) {
         // 1、清楚session中当前登录员工id
         request.getSession().removeAttribute("empId");
@@ -94,6 +99,7 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/list")
+    @ApiOperation(value = "分页查询", notes = "分页查询")
     public Result<?> list(Employee employee,
                           @RequestParam(name = "current", defaultValue = "1") Integer current,
                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -110,6 +116,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/add")
+    @ApiOperation(value = "添加后台用户", notes = "添加后台用户")
     public Result<?> add(@RequestBody Employee employee, HttpServletRequest request) {
 
         Long empId = (Long) request.getSession().getAttribute("empId");
@@ -126,6 +133,7 @@ public class EmployeeController {
      * @return
      */
     @PutMapping("/edit")
+    @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
     public Result<?> edit(@RequestBody Employee employee, HttpServletRequest request) {
         Long empId = (Long) request.getSession().getAttribute("empId");
         employeeService.edit(employee, empId);
@@ -140,6 +148,7 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/getById")
+    @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
     public Result<?> getById(String id) {
         Employee employee = employeeService.getById(id);
         return Result.OK(employee);

@@ -6,6 +6,8 @@ import com.example.takeout.modules.common.dto.DishesDTO;
 import com.example.takeout.modules.dishes.entity.Dishes;
 import com.example.takeout.modules.dishes.service.IDishesService;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dishes")
+@Api(tags = "菜品管理")
 public class DishesController {
 
     @Autowired
@@ -40,6 +43,7 @@ public class DishesController {
      * @return
      */
     @GetMapping("/list")
+    @ApiOperation(value = "分页查询", notes = "分页查询")
     public Result<?> list(Dishes dishes,
                           @RequestParam(name = "current", defaultValue = "1") Integer current,
                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -55,6 +59,7 @@ public class DishesController {
      * @return
      */
     @PostMapping("/add")
+    @ApiOperation(value = "添加菜品", notes = "添加菜品")
     public Result<?> add(@RequestBody DishesDTO dishesDto) {
 
         dishesService.add(dishesDto);
@@ -69,6 +74,7 @@ public class DishesController {
      * @return
      */
     @GetMapping("/getById")
+    @ApiOperation(value = "查询菜品信息", notes = "查询菜品信息")
     public Result<?> getById(Long id) {
         DishesDTO dishesDTO = dishesService.getDishesDTOById(id);
         return Result.OK(dishesDTO);
@@ -81,6 +87,7 @@ public class DishesController {
      * @return
      */
     @PutMapping("/edit")
+    @ApiOperation(value = "修改菜品信息", notes = "修改菜品信息")
     public Result<?> edit(@RequestBody DishesDTO dishesDTO) {
         dishesService.edit(dishesDTO);
         return Result.OK().success("菜品信息修改成功!");
@@ -95,6 +102,7 @@ public class DishesController {
      * @return
      */
     @GetMapping("/batchStatus")
+    @ApiOperation(value = "批量修改菜品状态", notes = "批量修改菜品状态")
     public Result<?> batchStatus(String ids, Integer status) {
         dishesService.batchStatus(ids, status);
         return Result.OK().success("菜品状态修改成功!");
@@ -107,6 +115,7 @@ public class DishesController {
      * @return
      */
     @DeleteMapping("/batchDelete")
+    @ApiOperation(value = "批量删除菜品", notes = "批量删除菜品")
     public Result<?> batchDelete(String ids) {
         dishesService.batchDelete(ids);
         return Result.OK().success("菜品删除成功!");
@@ -119,6 +128,7 @@ public class DishesController {
      * @return
      */
     @GetMapping("/listDishes")
+    @ApiOperation(value = "查询菜品列表", notes = "查询菜品列表")
     public Result<?> listDishes(Dishes dishes) {
         List<DishesDTO> list = dishesService.listDishesByCondition(dishes);
 

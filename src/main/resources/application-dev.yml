@@ -21,6 +21,10 @@ spring:
     port: 6379
     database: 1
 
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 # mybatis-plus相关配置
 mybatis-plus:
   # 配置xml文件所在位置

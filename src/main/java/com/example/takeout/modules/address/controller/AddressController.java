@@ -8,6 +8,8 @@ import com.example.takeout.modules.address.entity.Address;
 import com.example.takeout.modules.address.service.IAddressService;
 import com.example.takeout.utils.BaseContext;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +34,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/address")
+@Api(tags = "地址管理")
 public class AddressController {
 
     @Autowired
@@ -44,6 +47,7 @@ public class AddressController {
      * @return
      */
     @GetMapping("/list")
+    @ApiOperation(value = "列表查询", notes = "列表查询")
     public Result<?> list(HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");
         LambdaQueryWrapper<Address> queryWrapper = new LambdaQueryWrapper<>();
@@ -62,6 +66,7 @@ public class AddressController {
      * @return
      */
     @PostMapping("/add")
+    @ApiOperation(value = "新增收货地址", notes = "新增收货地址")
     public Result<?> add(@RequestBody Address address, HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");
         address.setUserId(userId);
@@ -77,6 +82,7 @@ public class AddressController {
      * @return
      */
     @GetMapping("/getById")
+    @ApiOperation(value = "查询收货地址", notes = "查询收货地址")
     public Result<?> getById(Long id) {
         Address address = addressService.getById(id);
 
@@ -90,6 +96,7 @@ public class AddressController {
      * @return
      */
     @PutMapping("/edit")
+    @ApiOperation(value = "修改收货地址", notes = "修改收货地址")
     public Result<?> edit(@RequestBody Address address) {
         address.setUserId(BaseContext.getLoginUserId());
         addressService.updateById(address);
@@ -104,6 +111,7 @@ public class AddressController {
      * @return
      */
     @DeleteMapping("/delete")
+    @ApiOperation(value = "删除收货地址", notes = "删除收货地址")
     public Result<?> delete(Long id) {
         LambdaUpdateWrapper<Address> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Address::getId, id).set(Address::getIsDelete, 1);
@@ -119,6 +127,7 @@ public class AddressController {
      * @return
      */
     @PutMapping("/default/{id}")
+    @ApiOperation(value = "设置默认收货地址", notes = "设置默认收货地址")
     public Result<?> setDefaultAddress(@PathVariable Long id) {
         Long userId = BaseContext.getLoginUserId();
         addressService.setDefaultAddress(id, userId);
@@ -132,6 +141,7 @@ public class AddressController {
      * @return
      */
     @GetMapping("/default")
+    @ApiOperation(value = "查询默认收货地址", notes = "查询默认收货地址")
     public Result<?> getDefaultAddress() {
         Address address = addressService.getDefaultAddress();
 

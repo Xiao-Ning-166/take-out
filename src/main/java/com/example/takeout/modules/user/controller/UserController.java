@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.example.takeout.modules.user.entity.User;
 import com.example.takeout.modules.user.service.IUserService;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,6 +27,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/user")
+@Api(tags = "前台用户管理")
 public class UserController {
 
     @Autowired
@@ -34,6 +37,7 @@ public class UserController {
     private RedisTemplate redisTemplate;
 
     @PostMapping("/login")
+    @ApiOperation(value = "前台用户登录", notes = "前台用户登录")
     public Result<?> login(@RequestBody Map<String, Object> map, HttpServletRequest request) {
         // 1、得到用户输入的验证码、手机号
         String code = map.get("code").toString();
@@ -67,6 +71,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/info")
+    @ApiOperation(value = "获取用户信息", notes = "获取用户信息")
     public Result<?> getUser(HttpServletRequest request) {
         // 1、从session中获取user_id
         String userId = request.getSession().getAttribute("userId").toString();

@@ -5,6 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.takeout.modules.user.entity.User;
 import com.example.takeout.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController
 @RequestMapping("/common")
+@Api(tags = "公共接口")
 public class CommonController {
 
     @Value("${take-out.path.upload}")
@@ -51,6 +54,7 @@ public class CommonController {
      * @return
      */
     @PostMapping("/upload")
+    @ApiOperation(value = "上传文件", notes = "上传文件")
     public Result<?> upload(MultipartFile file) {
 
         // 得到文件源名称和后缀名
@@ -85,6 +89,7 @@ public class CommonController {
      * @param response
      */
     @GetMapping("/download")
+    @ApiOperation(value = "下载文件", notes = "下载文件")
     public void download(String name, HttpServletResponse response) {
         FileInputStream inputStream = null;
         try {
@@ -123,6 +128,7 @@ public class CommonController {
      * @return
      */
     @PostMapping("/code")
+    @ApiOperation(value = "获取验证码", notes = "获取验证码")
     public Result<?> getVerificationCode(@RequestBody User user, HttpServletRequest request) {
         // 1、校验手机号
         if (StrUtil.isBlank(user.getPhone())) {
